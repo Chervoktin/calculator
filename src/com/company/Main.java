@@ -13,26 +13,26 @@ enum States {
 
 }
 
-public class Main {
+class FinalStateMachine {
+    private int position = 0;
+    private StringBuilder token = null;
+    private ArrayList<String> tokens = new ArrayList<>();
+    private States state = States.start;
+    private String string;
 
-    public static void main(String[] args) throws Exception {
-        Scanner in = new Scanner(System.in);
-        String string = in.nextLine();
-        States state = States.start;
+    public ArrayList<String> getTokens(String string) {
+        this.string = string;
         char c;
-        int position = 0;
-        StringBuilder token = null;
-        ArrayList<String> tokens = new ArrayList<>();
+
         while ((position < string.length()) && state != States.stop) {
             c = string.charAt(position);
-
             boolean plus = (c == '+');
             boolean minus = (c == '-');
             boolean div = (c == '/');
             boolean mul = (c == '*');
             boolean pow = (c == '^');
-            boolean openBacket = (c == '(');
-            boolean closeBacket = (c == ')');
+            boolean openBracket = (c == '(');
+            boolean closeBracket = (c == ')');
             switch (state) {
                 case start:
                     token = new StringBuilder();
@@ -47,7 +47,7 @@ public class Main {
                         state = States.reciveOperators;
                     }
 
-                    if (openBacket || closeBacket) {
+                    if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
                     }
                     break;
@@ -69,7 +69,7 @@ public class Main {
                         state = States.reciveOperators;
                     }
 
-                    if (openBacket || closeBacket) {
+                    if (openBracket || closeBracket) {
                         tokens.add(token.toString());
                         token = new StringBuilder();
                         state = States.reciveBrackets;
@@ -93,7 +93,7 @@ public class Main {
                         state = States.reciveOperators;
                     }
 
-                    if (openBacket || closeBacket) {
+                    if (openBracket || closeBracket) {
                         tokens.add(token.toString());
                         token = new StringBuilder();
                         state = States.reciveBrackets;
@@ -118,7 +118,7 @@ public class Main {
                     }
 
 
-                    if (openBacket || closeBacket) {
+                    if (openBracket || closeBracket) {
                         tokens.add(token.toString());
                         token = new StringBuilder();
                         state = States.reciveBrackets;
@@ -143,7 +143,7 @@ public class Main {
                     }
 
 
-                    if (openBacket || closeBacket) {
+                    if (openBracket || closeBracket) {
                         token.append(c);
                         position += 1;
                         state = States.reciveBrackets;
@@ -153,6 +153,18 @@ public class Main {
             if (position == string.length())
                 tokens.add(token.toString());
         }
+        return tokens;
+    }
+}
+
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+        Scanner in = new Scanner(System.in);
+        String string = in.nextLine();
+        FinalStateMachine fsm = new FinalStateMachine();
+        ArrayList<String> tokens = fsm.getTokens(string);
         for (int i = 0; i < tokens.size(); i++)
             System.out.println(tokens.get(i));
     }
