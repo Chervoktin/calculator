@@ -9,11 +9,9 @@ public class Main {
         Scanner in = new Scanner(System.in);
         String string = in.nextLine();
         TokensReader tokensReader = new TokensReader();
-        ArrayList<String> tokens = tokensReader.parseString(string);
+        ArrayList<Token> tokens = tokensReader.parseString(string);
         for (int i = 0; i < tokens.size(); i++) {
-            Token t = new Token();
-            t.setToken(tokens.get(i));
-            System.out.println(t.getType());
+            System.out.println(tokens.get(i).getType());
         }
     }
 }

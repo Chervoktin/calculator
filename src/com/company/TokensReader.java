@@ -14,15 +14,16 @@ enum States {
 
 class TokensReader {
     private int position = 0;
-    private StringBuilder token = null;
-    private ArrayList<String> tokens = new ArrayList<>();
+    private StringBuilder stringBuilerOfToken = null;
+    private ArrayList<Token> tokens = new ArrayList<>();
     private States state = States.start;
     private String string;
 
-    public ArrayList<String> parseString(String string) {
+    public ArrayList<Token> parseString(String string) {
         this.string = string;
         char c;
-
+        String stringOfToken = null;
+        Token token = null;
         while ((position < string.length()) && state != States.stop) {
             c = string.charAt(position);
             boolean plus = (c == '+');
@@ -34,7 +35,7 @@ class TokensReader {
             boolean closeBracket = (c == ')');
             switch (state) {
                 case start:
-                    token = new StringBuilder();
+                    stringBuilerOfToken = new StringBuilder();
                     if (Character.isDigit(c)) {
                         state = States.reciveDigital;
                     }
@@ -53,7 +54,7 @@ class TokensReader {
 
                 case reciveDigital:
                     if (Character.isDigit(c)) {
-                        token.append(c);
+                        stringBuilerOfToken.append(c);
                         position += 1;
                         state = States.reciveDigital;
                         break;
@@ -67,13 +68,16 @@ class TokensReader {
                     if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
                     }
-                    tokens.add(token.toString());
-                    token = new StringBuilder();
+                    stringOfToken = stringBuilerOfToken.toString();
+                    token = new Token();
+                    token.setToken(stringOfToken);
+                    tokens.add(token);
+                    stringBuilerOfToken = new StringBuilder();
                     break;
 
                 case reciveCharacters:
                     if (Character.isAlphabetic(c)) {
-                        token.append(c);
+                        stringBuilerOfToken.append(c);
                         position += 1;
                         state = States.reciveCharacters;
                         break;
@@ -89,13 +93,16 @@ class TokensReader {
                     if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
                     }
-                    tokens.add(token.toString());
-                    token = new StringBuilder();
+                    stringOfToken = stringBuilerOfToken.toString();
+                    token = new Token();
+                    token.setToken(stringOfToken);
+                    tokens.add(token);
+                    stringBuilerOfToken = new StringBuilder();
                     break;
 
                 case reciveOperators:
                     if (plus || minus || div || mul || pow) {
-                        token.append(c);
+                        stringBuilerOfToken.append(c);
                         position += 1;
                         state = States.reciveOperators;
                         break;
@@ -109,13 +116,16 @@ class TokensReader {
                     if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
                     }
-                    tokens.add(token.toString());
-                    token = new StringBuilder();
+                    stringOfToken = stringBuilerOfToken.toString();
+                    token = new Token();
+                    token.setToken(stringOfToken);
+                    tokens.add(token);
+                    stringBuilerOfToken = new StringBuilder();
                     break;
 
                 case reciveBrackets:
                     if (openBracket || closeBracket) {
-                        token.append(c);
+                        stringBuilerOfToken.append(c);
                         position += 1;
                         state = States.reciveBrackets;
                         break;
@@ -129,12 +139,19 @@ class TokensReader {
                     if (plus || minus || div || mul || pow) {
                         state = States.reciveOperators;
                     }
-                    tokens.add(token.toString());
-                    token = new StringBuilder();
+                    stringOfToken = stringBuilerOfToken.toString();
+                    token = new Token();
+                    token.setToken(stringOfToken);
+                    tokens.add(token);
+                    stringBuilerOfToken = new StringBuilder();
                     break;
             }
-            if (position == string.length())
-                tokens.add(token.toString());
+            if (position == string.length()) {
+                stringOfToken = stringBuilerOfToken.toString();
+                token = new Token();
+                token.setToken(stringOfToken);
+                tokens.add(token);
+            }
         }
         return tokens;
     }
