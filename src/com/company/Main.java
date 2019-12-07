@@ -13,7 +13,7 @@ enum States {
 
 }
 
-class FinalStateMachine {
+class TokensReader {
     private int position = 0;
     private StringBuilder token = null;
     private ArrayList<String> tokens = new ArrayList<>();
@@ -51,103 +51,87 @@ class FinalStateMachine {
                         state = States.reciveBrackets;
                     }
                     break;
+
                 case reciveDigital:
                     if (Character.isDigit(c)) {
                         token.append(c);
                         position += 1;
                         state = States.reciveDigital;
+                        break;
                     }
                     if (Character.isAlphabetic(c)) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
                         state = States.reciveCharacters;
                     }
-
                     if (plus || minus || div || mul || pow) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
                         state = States.reciveOperators;
                     }
-
                     if (openBracket || closeBracket) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
                         state = States.reciveBrackets;
                     }
+                    tokens.add(token.toString());
+                    token = new StringBuilder();
                     break;
+
                 case reciveCharacters:
-                    if (Character.isDigit(c)) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
-                        state = States.reciveDigital;
-                    }
                     if (Character.isAlphabetic(c)) {
                         token.append(c);
                         position += 1;
                         state = States.reciveCharacters;
+                        break;
+                    }
+                    if (Character.isDigit(c)) {
+                        state = States.reciveDigital;
                     }
 
                     if (plus || minus || div || mul || pow) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
                         state = States.reciveOperators;
                     }
 
                     if (openBracket || closeBracket) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
                         state = States.reciveBrackets;
                     }
+                    tokens.add(token.toString());
+                    token = new StringBuilder();
                     break;
+
                 case reciveOperators:
-                    if (Character.isDigit(c)) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
-                        state = States.reciveDigital;
-                    }
-                    if (Character.isAlphabetic(c)) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
-                        state = States.reciveCharacters;
-                    }
-
                     if (plus || minus || div || mul || pow) {
                         token.append(c);
                         position += 1;
                         state = States.reciveOperators;
+                        break;
                     }
-
-
+                    if (Character.isDigit(c)) {
+                        state = States.reciveDigital;
+                    }
+                    if (Character.isAlphabetic(c)) {
+                        state = States.reciveCharacters;
+                    }
                     if (openBracket || closeBracket) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
                         state = States.reciveBrackets;
                     }
+                    tokens.add(token.toString());
+                    token = new StringBuilder();
                     break;
+
                 case reciveBrackets:
-                    if (Character.isDigit(c)) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
-                        state = States.reciveDigital;
-                    }
-                    if (Character.isAlphabetic(c)) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
-                        state = States.reciveCharacters;
-                    }
-
-                    if (plus || minus || div || mul || pow) {
-                        tokens.add(token.toString());
-                        token = new StringBuilder();
-                        state = States.reciveOperators;
-                    }
-
-
                     if (openBracket || closeBracket) {
                         token.append(c);
                         position += 1;
                         state = States.reciveBrackets;
+                        break;
                     }
+                    if (Character.isDigit(c)) {
+                        state = States.reciveDigital;
+                    }
+                    if (Character.isAlphabetic(c)) {
+                        state = States.reciveCharacters;
+                    }
+                    if (plus || minus || div || mul || pow) {
+                        state = States.reciveOperators;
+                    }
+                    tokens.add(token.toString());
+                    token = new StringBuilder();
                     break;
             }
             if (position == string.length())
@@ -163,8 +147,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Scanner in = new Scanner(System.in);
         String string = in.nextLine();
-        FinalStateMachine fsm = new FinalStateMachine();
-        ArrayList<String> tokens = fsm.getTokens(string);
+        TokensReader tokensReader = new TokensReader();
+        ArrayList<String> tokens = tokensReader.getTokens(string);
         for (int i = 0; i < tokens.size(); i++)
             System.out.println(tokens.get(i));
     }
