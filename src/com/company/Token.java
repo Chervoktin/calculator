@@ -1,19 +1,15 @@
 package com.company;
 
-enum TypesOfToken {
-    number,
-    function,
-    operator,
-    openBracket,
-    closeBracket,
-    varible
-}
-
-class Token {
+public class Token {
     private TypesOfToken type;
+    private String string;
 
     public TypesOfToken getType() {
         return type;
+    }
+
+    public String getString() {
+        return this.string;
     }
 
     private boolean isDigit(String string) {
@@ -37,6 +33,7 @@ class Token {
     }
 
     public void setToken(String string) {
+        this.string = string;
         boolean plus = string.equals("+");
         boolean minus = string.equals("-");
         boolean div = string.equals("/");
