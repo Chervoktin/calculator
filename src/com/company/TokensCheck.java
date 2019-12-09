@@ -1,13 +1,29 @@
 package com.company;
 
-import com.company.Token;
-import com.company.TypesOfToken;
-
 import java.util.ArrayList;
 
 public class TokensCheck {
 
-    public boolean checkTokens(ArrayList<Token> tokens) {
+    public boolean check(ArrayList<Token> tokens) {
+        return checkTokens(tokens) && checkBrackets(tokens);
+    }
+
+    private boolean checkBrackets(ArrayList<Token> tokens) {
+        int countOfOpened = 0;
+        int countOfClosed = 0;
+        for (Token token : tokens) {
+            if (token.getType() == TypesOfToken.openBracket)
+                countOfOpened += 1;
+            if (token.getType() == TypesOfToken.closeBracket)
+                countOfClosed += 1;
+        }
+        if (countOfOpened == countOfClosed)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean checkTokens(ArrayList<Token> tokens) {
         StatesCheck state = StatesCheck.start;
         for (int i = 0; i < tokens.size(); i++) {
             switch (state) {

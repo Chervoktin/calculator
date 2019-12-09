@@ -12,7 +12,7 @@ public class Main {
         TokensReader tokensReader = new TokensReader();
         ArrayList<Token> tokens = tokensReader.parseString(string);
         TokensCheck tc = new TokensCheck();
-        System.out.println(tc.checkTokens(tokens));
+        System.out.println(tc.check(tokens));
         for (int i = 0; i < tokens.size(); i++) {
             System.out.println(tokens.get(i).getType());
         }
