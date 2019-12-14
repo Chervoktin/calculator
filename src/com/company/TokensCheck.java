@@ -17,10 +17,7 @@ public class TokensCheck {
             if (token.getType() == TypesOfToken.closeBracket)
                 countOfClosed += 1;
         }
-        if (countOfOpened == countOfClosed)
-            return true;
-        else
-            return false;
+        return countOfOpened == countOfClosed;
     }
 
     private boolean checkTokens(ArrayList<Token> tokens) {
