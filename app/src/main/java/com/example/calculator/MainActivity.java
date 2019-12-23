@@ -1,5 +1,4 @@
 package com.example.calculator;
-
 import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,11 +31,9 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     textViewIsCheck.setText("");
                 }
-
                 for (Token token : tokens) {
                     Log.e("Test", token.getString());
                 }
-
             }
         });
     }

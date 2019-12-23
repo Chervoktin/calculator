@@ -128,29 +128,23 @@ class TokensReader {
                         stringBuilerOfToken.append(c);
                         position += 1;
                         state = States.reciveBrackets;
+                        stringOfToken = stringBuilerOfToken.toString();
+                        token = new Token();
+                        token.setToken(stringOfToken);
+                        tokens.add(token);
+                        stringBuilerOfToken = new StringBuilder();
                         break;
                     }
                     if (Character.isDigit(c)) {
                         state = States.reciveDigital;
-                    }
-                    if (Character.isLetter(c)) {
+                        break;
+                    } else if (Character.isLetter(c)) {
                         state = States.reciveCharacters;
-                    }
-                    if (plus || minus || div || mul || pow) {
+                        break;
+                    } else if (plus || minus || div || mul || pow) {
                         state = States.reciveOperators;
+                        break;
                     }
-                    stringOfToken = stringBuilerOfToken.toString();
-                    token = new Token();
-                    token.setToken(stringOfToken);
-                    tokens.add(token);
-                    stringBuilerOfToken = new StringBuilder();
-                    break;
-            }
-            if (position == string.length()) {
-                stringOfToken = stringBuilerOfToken.toString();
-                token = new Token();
-                token.setToken(stringOfToken);
-                tokens.add(token);
             }
         }
         return tokens;
