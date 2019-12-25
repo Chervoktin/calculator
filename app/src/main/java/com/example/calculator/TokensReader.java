@@ -175,7 +175,7 @@ class TokensReader {
             }
         }
         this.string = this.stringBuilerOfToken.toString();
-        if (string != "") {
+        if (this.string != "") {
             addToken();
         }
         return tokens;
