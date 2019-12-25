@@ -1,8 +1,10 @@
 package com.example.calculator;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
+class InvaildTypeOfTokenException extends RuntimeException {
+    public InvaildTypeOfTokenException(String message) {
+        super(message);
+    }
+}
 
 public class Token {
     private TypesOfToken type;
@@ -24,7 +26,6 @@ public class Token {
             return false;
         }
     }
-
 
     private boolean isFunction(String string) {
 
@@ -61,6 +62,8 @@ public class Token {
             this.type = TypesOfToken.varible;
         } else if (isFunction(string)) {
             this.type = TypesOfToken.function;
+        } else {
+            throw new InvaildTypeOfTokenException("type of token not define");
         }
     }
 }
