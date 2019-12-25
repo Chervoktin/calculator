@@ -8,8 +8,15 @@ enum States {
     reciveDigital,
     reciveOperators,
     reciveCharacters,
-    reciveBrackets
+    reciveBrackets,
+    recivePoint
 
+}
+
+class InvaildTokenException extends Exception {
+    public InvaildTokenException(String message) {
+        super(message);
+    }
 }
 
 class TokensReader {
@@ -29,7 +36,7 @@ class TokensReader {
         stringBuilerOfToken = new StringBuilder();
     }
 
-    public ArrayList<Token> parseString(String string) {
+    public ArrayList<Token> parseString(String string) throws InvaildTokenException {
         this.string = string;
         char c;
 
@@ -42,6 +49,7 @@ class TokensReader {
             boolean pow = (c == '^');
             boolean openBracket = (c == '(');
             boolean closeBracket = (c == ')');
+            boolean point = (c == '.');
             switch (state) {
                 case start:
                     stringBuilerOfToken = new StringBuilder();
@@ -59,13 +67,39 @@ class TokensReader {
                     if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
                     }
+                    if (point) {
+                        throw new InvaildTokenException("two points in a row");
+                    }
                     break;
-
+                case recivePoint:
+                    if (Character.isDigit(c)) {
+                        state = States.reciveDigital;
+                        break;
+                    }
+                    if (Character.isLetter(c)) {
+                        state = States.reciveCharacters;
+                    }
+                    if (plus || minus || div || mul || pow) {
+                        state = States.reciveOperators;
+                    }
+                    if (openBracket || closeBracket) {
+                        state = States.reciveBrackets;
+                    }
+                    if (point) {
+                        throw new InvaildTokenException("two points in a row");
+                    }
+                    break;
                 case reciveDigital:
                     if (Character.isDigit(c)) {
                         stringBuilerOfToken.append(c);
                         position += 1;
                         state = States.reciveDigital;
+                        break;
+                    }
+                    if (point) {
+                        stringBuilerOfToken.append(c);
+                        position += 1;
+                        state = States.recivePoint;
                         break;
                     }
                     if (Character.isLetter(c)) {
@@ -139,6 +173,10 @@ class TokensReader {
                         break;
                     }
             }
+        }
+        this.string = this.stringBuilerOfToken.toString();
+        if (string != "") {
+            addToken();
         }
         return tokens;
     }
