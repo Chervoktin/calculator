@@ -19,11 +19,20 @@ class TokensReader {
     private States state = States.start;
     private String string;
 
+    private void addToken() {
+        String stringOfToken = null;
+        Token token = null;
+        stringOfToken = stringBuilerOfToken.toString();
+        token = new Token();
+        token.setToken(stringOfToken);
+        tokens.add(token);
+        stringBuilerOfToken = new StringBuilder();
+    }
+
     public ArrayList<Token> parseString(String string) {
         this.string = string;
         char c;
-        String stringOfToken = null;
-        Token token = null;
+
         while ((position < string.length()) && state != States.stop) {
             c = string.charAt(position);
             boolean plus = (c == '+');
@@ -68,11 +77,7 @@ class TokensReader {
                     if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
                     }
-                    stringOfToken = stringBuilerOfToken.toString();
-                    token = new Token();
-                    token.setToken(stringOfToken);
-                    tokens.add(token);
-                    stringBuilerOfToken = new StringBuilder();
+                    addToken();
                     break;
 
                 case reciveCharacters:
@@ -93,11 +98,7 @@ class TokensReader {
                     if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
                     }
-                    stringOfToken = stringBuilerOfToken.toString();
-                    token = new Token();
-                    token.setToken(stringOfToken);
-                    tokens.add(token);
-                    stringBuilerOfToken = new StringBuilder();
+                    addToken();
                     break;
 
                 case reciveOperators:
@@ -116,11 +117,7 @@ class TokensReader {
                     if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
                     }
-                    stringOfToken = stringBuilerOfToken.toString();
-                    token = new Token();
-                    token.setToken(stringOfToken);
-                    tokens.add(token);
-                    stringBuilerOfToken = new StringBuilder();
+                    addToken();
                     break;
 
                 case reciveBrackets:
@@ -128,11 +125,7 @@ class TokensReader {
                         stringBuilerOfToken.append(c);
                         position += 1;
                         state = States.reciveBrackets;
-                        stringOfToken = stringBuilerOfToken.toString();
-                        token = new Token();
-                        token.setToken(stringOfToken);
-                        tokens.add(token);
-                        stringBuilerOfToken = new StringBuilder();
+                        addToken();
                         break;
                     }
                     if (Character.isDigit(c)) {
