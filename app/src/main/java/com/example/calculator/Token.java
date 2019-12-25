@@ -18,9 +18,9 @@ public class Token {
         return this.string;
     }
 
-    private boolean isDigit(String string) {
+    private boolean isNumber(String string) {
         try {
-            Integer.parseInt(string);
+            Double.parseDouble(string);
             return true;
         } catch (Exception e) {
             return false;
@@ -50,7 +50,7 @@ public class Token {
         boolean closeBracket = string.equals(")");
         boolean isVariable = string.length() == 1 && Character.isAlphabetic(string.charAt(0));
 
-        if (isDigit(string)) {
+        if (isNumber(string)) {
             this.type = TypesOfToken.number;
         } else if (isOperator) {
             this.type = TypesOfToken.operator;
