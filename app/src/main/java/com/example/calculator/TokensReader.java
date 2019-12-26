@@ -84,7 +84,7 @@ class TokensReader {
                     } else if (Character.isLetter(c)) {
                         state = States.reciveCharacters;
                     } else if (plus || minus || div || mul || pow) {
-                        state = States.reciveOperators;
+                        throw new InvaildTokenException("operators not expected");
                     } else if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
                     } else if (point) {
