@@ -88,22 +88,7 @@ class TokensReader {
                     } else if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
                     } else if (point) {
-                        throw new InvaildTokenException("two points in a row");
-                    } else {
-                        throw new StateNotFoundException("state not fond");
-                    }
-                    break;
-                case recivePoint:
-                    if (Character.isDigit(c)) {
-                        state = States.reciveDigital;
-                    } else if (Character.isLetter(c)) {
-                        state = States.reciveCharacters;
-                    } else if (plus || minus || div || mul || pow) {
-                        state = States.reciveOperators;
-                    } else if (openBracket || closeBracket) {
-                        state = States.reciveBrackets;
-                    } else if (point) {
-                        throw new InvaildTokenException("two points in a row");
+                        throw new InvaildTokenException("point not expected");
                     } else {
                         throw new StateNotFoundException("state not fond");
                     }
@@ -121,7 +106,7 @@ class TokensReader {
                     } else if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
                     } else if (point) {
-                        throw new InvaildTokenException("Point after digit");
+                        throw new InvaildTokenException("point after digit");
                     } else {
                         throw new StateNotFoundException("state not fond");
                     }
@@ -140,6 +125,8 @@ class TokensReader {
                         state = States.reciveOperators;
                     } else if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
+                    } else if (point) {
+                        throw new InvaildTokenException("point not expected");
                     } else {
                         throw new StateNotFoundException("state not fond");
                     }
@@ -159,6 +146,8 @@ class TokensReader {
                         state = States.reciveCharacters;
                     } else if (openBracket || closeBracket) {
                         state = States.reciveBrackets;
+                    } else if (point) {
+                        throw new InvaildTokenException("point not expected");
                     } else {
                         throw new StateNotFoundException("state not fond");
                     }
@@ -181,6 +170,8 @@ class TokensReader {
                     } else if (plus || minus || div || mul || pow) {
                         state = States.reciveOperators;
                         break;
+                    } else if (point) {
+                        throw new InvaildTokenException("point not expected");
                     } else {
                         throw new StateNotFoundException("state not fond");
                     }
