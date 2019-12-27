@@ -6,5 +6,6 @@ public enum TypesOfToken {
     operator,
     openBracket,
     closeBracket,
-    varible
+    varible,
+    unaryMinus
 }
