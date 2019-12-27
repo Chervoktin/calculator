@@ -38,32 +38,8 @@ public class Token {
         return isNameOfFunction;
     }
 
-    public void setToken(String string) {
+    public void setToken(String string, TypesOfToken type) {
         this.string = string;
-        boolean plus = string.equals("+");
-        boolean minus = string.equals("-");
-        boolean div = string.equals("/");
-        boolean mul = string.equals("*");
-        boolean pow = string.equals("^");
-        boolean isOperator = plus || minus || div || mul || pow;
-        boolean openBracket = string.equals("(");
-        boolean closeBracket = string.equals(")");
-        boolean isVariable = string.length() == 1 && Character.isAlphabetic(string.charAt(0));
-
-        if (isNumber(string)) {
-            this.type = TypesOfToken.number;
-        } else if (isOperator) {
-            this.type = TypesOfToken.operator;
-        } else if (openBracket) {
-            this.type = TypesOfToken.openBracket;
-        } else if (closeBracket) {
-            this.type = TypesOfToken.closeBracket;
-        } else if (isVariable) {
-            this.type = TypesOfToken.varible;
-        } else if (isFunction(string)) {
-            this.type = TypesOfToken.function;
-        } else {
-            throw new InvaildTypeOfTokenException("type of token not define");
-        }
+        this.type = type;
     }
 }
