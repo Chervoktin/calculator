@@ -9,9 +9,14 @@ class InvaildTypeOfTokenException extends RuntimeException {
 public class Token {
     private TypesOfToken type;
     private String string;
+    private int priority = -1;
 
     public TypesOfToken getType() {
         return type;
+    }
+
+    public int getPriority() {
+        return this.priority;
     }
 
     public String getString() {
@@ -39,6 +44,16 @@ public class Token {
     }
 
     public void setToken(String string, TypesOfToken type) {
+        boolean plus = string.equals("+");
+        boolean minus = string.equals("-");
+        boolean div = string.equals("/");
+        boolean mul = string.equals("*");
+        boolean pow = string.equals("^");
+        boolean uminus = string.equals("-u");
+        if (plus || minus) this.priority = 1;
+        if (div || mul) this.priority = 2;
+        if (pow || uminus) this.priority = 3;
+        if (type == TypesOfToken.function) this.priority = 4;
         this.string = string;
         this.type = type;
     }
