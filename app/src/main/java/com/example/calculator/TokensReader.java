@@ -1,7 +1,8 @@
 package com.example.calculator;
+
 import java.util.ArrayList;
 
-enum States {
+enum StatesOfParse {
     start,
     stop,
     reciveDigital,
@@ -25,10 +26,11 @@ class StateNotFoundException extends RuntimeException {
 }
 
 class TokensReader {
-    private int position = 0;
-    private ArrayList<Token> tokens = new ArrayList<>();
-    private States state = States.start;
-    private String string;
+    ArrayList<Token> tokens;
+
+    TokensReader() {
+        tokens = new ArrayList<>();
+    }
 
     private void addToken(StringBuilder stringBuilerOfToken, TypesOfToken type) {
         String stringOfToken = stringBuilerOfToken.toString();
@@ -38,7 +40,7 @@ class TokensReader {
         stringBuilerOfToken.setLength(0);
     }
 
-    private void reciveNumber(StringBuilder stringBuilerOfToken) throws InvaildTokenException {
+    private int reciveNumber(StringBuilder stringBuilerOfToken, String string, Integer position) throws InvaildTokenException {
         boolean flag = false;
         char c = string.charAt(position);
         boolean isDigit = Character.isDigit(c);
@@ -57,13 +59,15 @@ class TokensReader {
                 break;
             }
         }
+        return position;
     }
 
     public ArrayList<Token> parseString(String string) throws InvaildTokenException {
-        this.string = string;
+        Integer position = 0;
         char c;
         StringBuilder stringBuilerOfToken = new StringBuilder();
-        while ((position < string.length()) && state != States.stop) {
+        StatesOfParse state = StatesOfParse.start;
+        while ((position < string.length()) && state != StatesOfParse.stop) {
             c = string.charAt(position);
             boolean plus = (c == '+');
             boolean minus = (c == '-');
@@ -76,15 +80,15 @@ class TokensReader {
             switch (state) {
                 case start:
                     if (Character.isDigit(c)) {
-                        state = States.reciveDigital;
+                        state = StatesOfParse.reciveDigital;
                     } else if (minus) {
-                        state = States.reciveMinus;
+                        state = StatesOfParse.reciveMinus;
                     } else if (Character.isLetter(c)) {
-                        state = States.reciveCharacters;
+                        state = StatesOfParse.reciveCharacters;
                     } else if (plus || minus || div || mul || pow) {
                         throw new InvaildTokenException("operators not expected");
                     } else if (openBracket) {
-                        state = States.reciveOpenBracket;
+                        state = StatesOfParse.reciveOpenBracket;
                     } else if (closeBracket) {
                         throw new InvaildTokenException("closeBracket not expected");
                     } else if (point) {
@@ -95,16 +99,16 @@ class TokensReader {
                     break;
                 case reciveDigital:
                     if (Character.isDigit(c)) {
-                        reciveNumber(stringBuilerOfToken);
-                        state = States.reciveDigital;
+                        position = reciveNumber(stringBuilerOfToken, string, position);
+                        state = StatesOfParse.reciveDigital;
                         addToken(stringBuilerOfToken, TypesOfToken.number);
                         break;
                     } else if (Character.isLetter(c)) {
-                        state = States.reciveCharacters;
+                        state = StatesOfParse.reciveCharacters;
                     } else if (plus || minus || div || mul || pow) {
-                        state = States.reciveOperators;
+                        state = StatesOfParse.reciveOperators;
                     } else if (openBracket || closeBracket) {
-                        state = States.reciveBrackets;
+                        state = StatesOfParse.reciveBrackets;
                     } else if (point) {
                         throw new InvaildTokenException("point after digit");
                     } else {
@@ -116,15 +120,15 @@ class TokensReader {
                     if (Character.isLetter(c)) {
                         stringBuilerOfToken.append(c);
                         position += 1;
-                        state = States.reciveCharacters;
+                        state = StatesOfParse.reciveCharacters;
                         break;
                     }
                     if (Character.isDigit(c)) {
-                        state = States.reciveDigital;
+                        state = StatesOfParse.reciveDigital;
                     } else if (plus || minus || div || mul || pow) {
-                        state = States.reciveOperators;
+                        state = StatesOfParse.reciveOperators;
                     } else if (openBracket || closeBracket) {
-                        state = States.reciveBrackets;
+                        state = StatesOfParse.reciveBrackets;
                     } else if (point) {
                         throw new InvaildTokenException("point not expected");
                     } else {
@@ -137,15 +141,15 @@ class TokensReader {
                     if (plus || minus || div || mul || pow) {
                         stringBuilerOfToken.append(c);
                         position += 1;
-                        state = States.reciveOperators;
+                        state = StatesOfParse.reciveOperators;
                         addToken(stringBuilerOfToken, TypesOfToken.operator);
                         break;
                     } else if (Character.isDigit(c)) {
-                        state = States.reciveDigital;
+                        state = StatesOfParse.reciveDigital;
                     } else if (Character.isLetter(c)) {
-                        state = States.reciveCharacters;
+                        state = StatesOfParse.reciveCharacters;
                     } else if (openBracket || closeBracket) {
-                        state = States.reciveBrackets;
+                        state = StatesOfParse.reciveBrackets;
                     } else if (point) {
                         throw new InvaildTokenException("point not expected");
                     } else {
@@ -154,19 +158,19 @@ class TokensReader {
                     break;
                 case reciveMinus:
                     if (Character.isDigit(c)) {
-                        state = States.reciveDigital;
+                        state = StatesOfParse.reciveDigital;
                     } else if (minus) {
                         stringBuilerOfToken.append(c);
                         stringBuilerOfToken.append('u');
                         position += 1;
-                        state = States.start;
-                        addToken(stringBuilerOfToken, TypesOfToken.unaryMinus);
+                        state = StatesOfParse.start;
+                        addToken(stringBuilerOfToken, TypesOfToken.operator);
                     } else if (Character.isLetter(c)) {
-                        state = States.reciveCharacters;
+                        state = StatesOfParse.reciveCharacters;
                     } else if (plus || minus || div || mul || pow) {
                         throw new InvaildTokenException("operators not expected");
                     } else if (openBracket) {
-                        state = States.reciveBrackets;
+                        state = StatesOfParse.reciveBrackets;
                     } else if (closeBracket) {
                         throw new InvaildTokenException("closeBracket not expected");
                     } else if (point) {
@@ -178,19 +182,19 @@ class TokensReader {
                     if (openBracket) {
                         stringBuilerOfToken.append(c);
                         position += 1;
-                        state = States.reciveBrackets;
+                        state = StatesOfParse.reciveBrackets;
                         addToken(stringBuilerOfToken, TypesOfToken.openBracket);
                         break;
                     }
                     if (minus) {
-                        state = States.reciveMinus;
+                        state = StatesOfParse.reciveMinus;
                         break;
                     }
                     if (Character.isDigit(c)) {
-                        state = States.reciveDigital;
+                        state = StatesOfParse.reciveDigital;
                         break;
                     } else if (Character.isLetter(c)) {
-                        state = States.reciveCharacters;
+                        state = StatesOfParse.reciveCharacters;
                         break;
                     } else if (plus || minus || div || mul || pow) {
                         throw new InvaildTokenException("operator not expected");
@@ -200,20 +204,22 @@ class TokensReader {
                         throw new StateNotFoundException("state not fond");
                     }
                 case reciveBrackets:
-                    if (openBracket || closeBracket) {
+                    if (closeBracket) {
                         stringBuilerOfToken.append(c);
                         position += 1;
-                        state = States.reciveBrackets;
-                        addToken(stringBuilerOfToken, TypesOfToken.openBracket);
+                        state = StatesOfParse.reciveBrackets;
+                        addToken(stringBuilerOfToken, TypesOfToken.closeBracket);
                         break;
+                    } else if (openBracket) {
+                        state = StatesOfParse.reciveOpenBracket;
                     } else if (minus) {
-                        state = States.reciveMinus;
+                        state = StatesOfParse.reciveOperators;
                     } else if (Character.isDigit(c)) {
-                        state = States.reciveDigital;
+                        state = StatesOfParse.reciveDigital;
                     } else if (Character.isLetter(c)) {
-                        state = States.reciveCharacters;
+                        state = StatesOfParse.reciveCharacters;
                     } else if (plus || minus || div || mul || pow) {
-                        state = States.reciveOperators;
+                        state = StatesOfParse.reciveOperators;
                     } else if (point) {
                         throw new InvaildTokenException("point not expected");
                     } else {
@@ -221,8 +227,8 @@ class TokensReader {
                     }
             }
         }
-        this.string = stringBuilerOfToken.toString();
-        if (this.string != "") {
+        string = stringBuilerOfToken.toString();
+        if (string != "") {
             throw new RuntimeException("Error");
         }
         return tokens;
