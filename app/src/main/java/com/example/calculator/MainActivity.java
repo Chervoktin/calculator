@@ -19,12 +19,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final EditText editTextStringToParse = findViewById(R.id.editText);
+        final TextView textViewResult = findViewById(R.id.textViewResult);
         Button button = findViewById(R.id.button);
         final TextView textViewIsCheck = findViewById(R.id.textView);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Double d = Double.valueOf("1..1");
                 TokensReader tokensReader = new TokensReader();
                 String str = editTextStringToParse.getText().toString();
                 ArrayList<Token> tokens = null;
@@ -35,15 +35,12 @@ public class MainActivity extends AppCompatActivity {
                     tokens = null;
                 }
                 if (tokens != null) {
-                    TokensCheck tokensCheck = new TokensCheck();
-                    if (!tokensCheck.check(tokens)) {
-                        textViewIsCheck.setText("Ошибка");
-                        textViewIsCheck.setTextColor(Color.parseColor("red"));
-                    } else {
-                        textViewIsCheck.setText("");
-                    }
+                    Calculator c = new Calculator(tokens);
+                    textViewResult.setText(Double.toString(c.calculate()));
                     for (Token token : tokens) {
-                        Log.e("Test", token.getString());
+                        Log.e("Test", token.getString()
+                                + " type:" + token.getType()
+                                + "Priority:" + token.getPriority());
                     }
                 }
             }
