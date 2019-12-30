@@ -12,6 +12,12 @@ enum StateOfCalculate {
     closeBracket,
 }
 
+class FunctionNotFoundException extends Exception {
+    public FunctionNotFoundException(String message) {
+        super(message);
+    }
+}
+
 class Calculator {
     private ArrayList<Token> tokens;
     Stack<Double> numbers;
@@ -30,8 +36,6 @@ class Calculator {
         boolean mul = token.getString().equals("*");
         boolean div = token.getString().equals("/");
         boolean pow = token.getString().equals("^");
-        boolean openBracket = token.getString().equals("(");
-        boolean closeBracket = token.getString().equals(")");
         double firstOperand;
         double secondOperand;
         double result = 0;
@@ -62,42 +66,54 @@ class Calculator {
         return result;
     }
 
-    public double calculate() {
+    public double calculate() throws FunctionNotFoundException {
 
         int position = 0;
         StateOfCalculate state = StateOfCalculate.start;
+        boolean number;
+        boolean operator;
+        boolean unaryMinus;
+        boolean function;
+        boolean closeBracket;
+        boolean openBracket;
         while (position < tokens.size()) {
+            number = tokens.get(position).getType() == TypesOfToken.number;
+            operator = tokens.get(position).getType() == TypesOfToken.operator;
+            unaryMinus = tokens.get(position).getType() == TypesOfToken.unaryMinus;
+            function = tokens.get(position).getType() == TypesOfToken.function;
+            closeBracket = tokens.get(position).getType() == TypesOfToken.closeBracket;
+            openBracket = tokens.get(position).getType() == TypesOfToken.openBracket;
             switch (state) {
                 case start:
-                    if (tokens.get(position).getType() == TypesOfToken.number) {
+                    if (number) {
                         state = StateOfCalculate.number;
-                    } else if (tokens.get(position).getType() == TypesOfToken.operator) {
+                    } else if (operator) {
                         state = StateOfCalculate.operator;
-                    } else if (tokens.get(position).getType() == TypesOfToken.unaryMinus) {
+                    } else if (unaryMinus) {
                         state = StateOfCalculate.operator;
-                    } else if (tokens.get(position).getType() == TypesOfToken.function) {
+                    } else if (function) {
                         state = StateOfCalculate.function;
-                    } else if (tokens.get(position).getType() == TypesOfToken.closeBracket) {
+                    } else if (closeBracket) {
                         state = StateOfCalculate.closeBracket;
-                    } else if (tokens.get(position).getType() == TypesOfToken.openBracket) {
+                    } else if (openBracket) {
                         state = StateOfCalculate.openBracket;
                     }
                     break;
                 case number:
-                    if (tokens.get(position).getType() == TypesOfToken.number) {
+                    if (number) {
                         state = StateOfCalculate.number;
                         numbers.push(Double.parseDouble(tokens.get(position).getString()));
                         position += 1;
-                    } else if (tokens.get(position).getType() == TypesOfToken.operator) {
+                    } else if (operator) {
                         state = StateOfCalculate.operator;
-                    } else if (tokens.get(position).getType() == TypesOfToken.closeBracket) {
+                    } else if (closeBracket) {
                         state = StateOfCalculate.closeBracket;
                     }
                     break;
                 case operator:
-                    if (tokens.get(position).getType() == TypesOfToken.number) {
+                    if (number) {
                         state = StateOfCalculate.number;
-                    } else if (tokens.get(position).getType() == TypesOfToken.operator) {
+                    } else if (operator) {
 
                         if (operatorsAndFunctions.empty()) {
                             operatorsAndFunctions.push(tokens.get(position));
@@ -109,36 +125,38 @@ class Calculator {
                             numbers.push(calculateOnStack(operatorsAndFunctions.pop()));
 
                         }
-                    } else if (tokens.get(position).getType() == TypesOfToken.closeBracket) {
+                    } else if (closeBracket) {
                         state = StateOfCalculate.closeBracket;
-                    } else if (tokens.get(position).getType() == TypesOfToken.openBracket) {
+                    } else if (openBracket) {
                         state = StateOfCalculate.openBracket;
+                    } else if (function) {
+                        state = StateOfCalculate.function;
                     }
                     break;
                 case openBracket:
-                    if (tokens.get(position).getType() == TypesOfToken.number) {
+                    if (number) {
                         state = StateOfCalculate.number;
-                    } else if (tokens.get(position).getType() == TypesOfToken.operator) {
+                    } else if (operator) {
                         state = StateOfCalculate.operator;
-                    } else if (tokens.get(position).getType() == TypesOfToken.function) {
+                    } else if (function) {
                         state = StateOfCalculate.function;
-                    } else if (tokens.get(position).getType() == TypesOfToken.openBracket) {
+                    } else if (openBracket) {
                         operatorsAndFunctions.push(tokens.get(position));
                         position += 1;
-                    } else if (tokens.get(position).getType() == TypesOfToken.closeBracket) {
+                    } else if (closeBracket) {
                         state = StateOfCalculate.closeBracket;
                     }
                     break;
                 case closeBracket:
-                    if (tokens.get(position).getType() == TypesOfToken.number) {
+                    if (number) {
                         state = StateOfCalculate.number;
-                    } else if (tokens.get(position).getType() == TypesOfToken.operator) {
+                    } else if (operator) {
                         state = StateOfCalculate.operator;
-                    } else if (tokens.get(position).getType() == TypesOfToken.function) {
+                    } else if (function) {
                         state = StateOfCalculate.function;
-                    } else if (tokens.get(position).getType() == TypesOfToken.openBracket) {
+                    } else if (openBracket) {
                         state = StateOfCalculate.openBracket;
-                    } else if (tokens.get(position).getType() == TypesOfToken.closeBracket) {
+                    } else if (closeBracket) {
                         if (operatorsAndFunctions.lastElement().getType() != TypesOfToken.openBracket) {
                             numbers.push(calculateOnStack(operatorsAndFunctions.pop()));
                         } else {
@@ -146,6 +164,8 @@ class Calculator {
                             position += 1;
                         }
                     }
+                case function:
+                    throw new FunctionNotFoundException("function " + tokens.get(position).getString() + " not found");
             }
         }
         while (operatorsAndFunctions.size() > 0) {
