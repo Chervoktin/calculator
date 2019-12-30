@@ -79,6 +79,8 @@ class Calculator {
                         state = StateOfCalculate.function;
                     } else if (tokens.get(position).getType() == TypesOfToken.closeBracket) {
                         state = StateOfCalculate.closeBracket;
+                    } else if (tokens.get(position).getType() == TypesOfToken.openBracket) {
+                        state = StateOfCalculate.openBracket;
                     }
                     break;
                 case number:
