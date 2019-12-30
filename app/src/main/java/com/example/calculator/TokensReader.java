@@ -8,7 +8,7 @@ enum StatesOfParse {
     reciveDigital,
     reciveOperators,
     reciveCharacters,
-    reciveBrackets,
+    reciveCloseBracket,
     reciveOpenBracket,
     reciveMinus,
 }
@@ -63,6 +63,9 @@ class TokensReader {
     }
 
     public ArrayList<Token> parseString(String string) throws InvaildTokenException {
+        if (string.length() == 0) {
+            throw new InvaildTokenException("string is empty");
+        }
         Integer position = 0;
         char c;
         StringBuilder stringBuilerOfToken = new StringBuilder();
@@ -94,7 +97,7 @@ class TokensReader {
                     } else if (point) {
                         throw new InvaildTokenException("point not expected");
                     } else {
-                        throw new StateNotFoundException("state not fond");
+                        throw new InvaildTokenException(string.charAt(position) + " not excepted");
                     }
                     break;
                 case reciveDigital:
@@ -104,37 +107,46 @@ class TokensReader {
                         addToken(stringBuilerOfToken, TypesOfToken.number);
                         break;
                     } else if (Character.isLetter(c)) {
-                        state = StatesOfParse.reciveCharacters;
+                        throw new InvaildTokenException("character is not excepted");
                     } else if (plus || minus || div || mul || pow) {
                         state = StatesOfParse.reciveOperators;
-                    } else if (openBracket || closeBracket) {
-                        state = StatesOfParse.reciveBrackets;
+                    } else if (openBracket) {
+                        throw new InvaildTokenException("open bracket not excepted");
+                    } else if (closeBracket) {
+                        state = StatesOfParse.reciveCloseBracket;
                     } else if (point) {
                         throw new InvaildTokenException("point after digit");
                     } else {
-                        throw new StateNotFoundException("state not fond");
+                        throw new InvaildTokenException(string.charAt(position) + " not excepted");
                     }
                     break;
 
                 case reciveCharacters:
                     if (Character.isLetter(c)) {
-                        stringBuilerOfToken.append(c);
-                        position += 1;
-                        state = StatesOfParse.reciveCharacters;
-                        break;
-                    }
-                    if (Character.isDigit(c)) {
+                        while (Character.isLetter(c)) {
+                            stringBuilerOfToken.append(c);
+                            position += 1;
+                            if (position < string.length()) {
+                                c = string.charAt(position);
+                            } else {
+                                break;
+                            }
+                            state = StatesOfParse.reciveCharacters;
+                        }
+                        addToken(stringBuilerOfToken, TypesOfToken.function);
+                    } else if (Character.isDigit(c)) {
                         state = StatesOfParse.reciveDigital;
                     } else if (plus || minus || div || mul || pow) {
                         state = StatesOfParse.reciveOperators;
-                    } else if (openBracket || closeBracket) {
-                        state = StatesOfParse.reciveBrackets;
+                    } else if (openBracket) {
+                        state = StatesOfParse.reciveOpenBracket;
+                    } else if (closeBracket) {
+                        throw new InvaildTokenException("close bracket not excepted");
                     } else if (point) {
                         throw new InvaildTokenException("point not expected");
                     } else {
-                        throw new StateNotFoundException("state not fond");
+                        throw new InvaildTokenException(string.charAt(position) + " not excepted");
                     }
-                    addToken(stringBuilerOfToken, TypesOfToken.function);
                     break;
 
                 case reciveOperators:
@@ -148,12 +160,14 @@ class TokensReader {
                         state = StatesOfParse.reciveDigital;
                     } else if (Character.isLetter(c)) {
                         state = StatesOfParse.reciveCharacters;
-                    } else if (openBracket || closeBracket) {
-                        state = StatesOfParse.reciveBrackets;
+                    } else if (openBracket) {
+                        state = StatesOfParse.reciveOpenBracket;
+                    } else if (closeBracket) {
+                        throw new InvaildTokenException("close bracket not excepted");
                     } else if (point) {
                         throw new InvaildTokenException("point not expected");
                     } else {
-                        throw new StateNotFoundException("state not fond");
+                        throw new InvaildTokenException(string.charAt(position) + " not excepted");
                     }
                     break;
                 case reciveMinus:
@@ -170,46 +184,43 @@ class TokensReader {
                     } else if (plus || minus || div || mul || pow) {
                         throw new InvaildTokenException("operators not expected");
                     } else if (openBracket) {
-                        state = StatesOfParse.reciveBrackets;
+                        state = StatesOfParse.reciveOpenBracket;
                     } else if (closeBracket) {
                         throw new InvaildTokenException("closeBracket not expected");
                     } else if (point) {
                         throw new InvaildTokenException("point not expected");
                     } else {
-                        throw new StateNotFoundException("state not fond");
+                        throw new InvaildTokenException(string.charAt(position) + " not excepted");
                     }
+                    break;
                 case reciveOpenBracket:
                     if (openBracket) {
                         stringBuilerOfToken.append(c);
                         position += 1;
-                        state = StatesOfParse.reciveBrackets;
+                        state = StatesOfParse.reciveOpenBracket;
                         addToken(stringBuilerOfToken, TypesOfToken.openBracket);
-                        break;
-                    }
-                    if (minus) {
+                    } else if (closeBracket) {
+                        throw new InvaildTokenException("close bracket not excepted");
+                    } else if (minus) {
                         state = StatesOfParse.reciveMinus;
-                        break;
-                    }
-                    if (Character.isDigit(c)) {
+                    } else if (Character.isDigit(c)) {
                         state = StatesOfParse.reciveDigital;
-                        break;
                     } else if (Character.isLetter(c)) {
                         state = StatesOfParse.reciveCharacters;
-                        break;
                     } else if (plus || minus || div || mul || pow) {
                         throw new InvaildTokenException("operator not expected");
                     } else if (point) {
                         throw new InvaildTokenException("point not expected");
                     } else {
-                        throw new StateNotFoundException("state not fond");
+                        throw new InvaildTokenException(string.charAt(position) + " not excepted");
                     }
-                case reciveBrackets:
+                    break;
+                case reciveCloseBracket:
                     if (closeBracket) {
                         stringBuilerOfToken.append(c);
                         position += 1;
-                        state = StatesOfParse.reciveBrackets;
+                        state = StatesOfParse.reciveCloseBracket;
                         addToken(stringBuilerOfToken, TypesOfToken.closeBracket);
-                        break;
                     } else if (openBracket) {
                         state = StatesOfParse.reciveOpenBracket;
                     } else if (minus) {
@@ -223,8 +234,9 @@ class TokensReader {
                     } else if (point) {
                         throw new InvaildTokenException("point not expected");
                     } else {
-                        throw new StateNotFoundException("state not fond");
+                        throw new InvaildTokenException(string.charAt(position) + " not excepted");
                     }
+                    break;
             }
         }
         string = stringBuilerOfToken.toString();
