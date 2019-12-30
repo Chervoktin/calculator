@@ -29,13 +29,16 @@ class Calculator {
         operatorsAndFunctions = new Stack<>();
     }
 
-    private double calculateOnStack(Token token) {
+    private double calculateOnStack(Token token) throws FunctionNotFoundException {
         boolean plus = token.getString().equals("+");
         boolean min = token.getString().equals("-");
         boolean umin = token.getString().equals("-u");
         boolean mul = token.getString().equals("*");
         boolean div = token.getString().equals("/");
         boolean pow = token.getString().equals("^");
+        boolean sin = token.getString().equals("sin");
+        boolean cos = token.getString().equals("cos");
+        boolean tan = token.getString().equals("tan");
         double firstOperand;
         double secondOperand;
         double result = 0;
@@ -62,6 +65,17 @@ class Calculator {
         } else if (umin) {
             firstOperand = numbers.pop();
             result = -firstOperand;
+        } else if (sin) {
+            firstOperand = numbers.pop();
+            result = Math.sin(firstOperand);
+        } else if (cos) {
+            firstOperand = numbers.pop();
+            result = Math.cos(firstOperand);
+        } else if (tan) {
+            firstOperand = numbers.pop();
+            result = Math.tan(firstOperand);
+        } else {
+            throw new FunctionNotFoundException("function " + token.getString() + " not found");
         }
         return result;
     }
@@ -110,10 +124,11 @@ class Calculator {
                         state = StateOfCalculate.closeBracket;
                     }
                     break;
+                case function:
                 case operator:
                     if (number) {
                         state = StateOfCalculate.number;
-                    } else if (operator) {
+                    } else if (operator || function) {
 
                         if (operatorsAndFunctions.empty()) {
                             operatorsAndFunctions.push(tokens.get(position));
@@ -164,8 +179,6 @@ class Calculator {
                             position += 1;
                         }
                     }
-                case function:
-                    throw new FunctionNotFoundException("function " + tokens.get(position).getString() + " not found");
             }
         }
         while (operatorsAndFunctions.size() > 0) {
