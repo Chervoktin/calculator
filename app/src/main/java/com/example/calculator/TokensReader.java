@@ -240,7 +240,7 @@ class TokensReader {
             }
         }
         string = stringBuilerOfToken.toString();
-        if (string != "") {
+        if (!string.equals("")) {
             throw new RuntimeException("Error");
         }
         return tokens;
