@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
                     tokens = null;
                 }
                 if (tokens != null) {
+                    textViewIsCheck.setText("");
                     Calculator c = new Calculator(tokens);
                     textViewResult.setText(Double.toString(c.calculate()));
                     for (Token token : tokens) {
