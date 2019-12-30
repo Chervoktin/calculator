@@ -37,7 +37,12 @@ public class MainActivity extends AppCompatActivity {
                 if (tokens != null) {
                     textViewIsCheck.setText("");
                     Calculator c = new Calculator(tokens);
-                    textViewResult.setText(Double.toString(c.calculate()));
+                    try {
+                        textViewIsCheck.setText("");
+                        textViewResult.setText(Double.toString(c.calculate()));
+                    } catch (FunctionNotFoundException e) {
+                        textViewIsCheck.setText(e.getMessage());
+                    }
                     for (Token token : tokens) {
                         Log.e("Test", token.getString()
                                 + " type:" + token.getType()
