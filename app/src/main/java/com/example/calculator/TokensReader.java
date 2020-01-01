@@ -19,12 +19,6 @@ class InvalidTokenException extends Exception {
     }
 }
 
-class StateNotFoundException extends RuntimeException {
-    public StateNotFoundException(String message) {
-        super(message);
-    }
-}
-
 class TokensReader {
     ArrayList<Token> tokens;
 
