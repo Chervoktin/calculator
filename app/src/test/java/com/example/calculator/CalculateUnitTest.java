@@ -13,7 +13,7 @@ public class CalculateUnitTest {
         ArrayList<Token> tokens = new ArrayList<>();
         try {
             tokens = tokensReader.parseString("2^3+2*(3+4/2-(1+2))*2+sin(1)+cos(2)+tan(0.5)");
-        } catch (InvaildTokenException e) {
+        } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
         Calculator calculator = new Calculator(tokens);
@@ -30,7 +30,7 @@ public class CalculateUnitTest {
         ArrayList<Token> tokens = new ArrayList<>();
         try {
             tokens = tokensReader.parseString("sin(1)");
-        } catch (InvaildTokenException e) {
+        } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
         Calculator calculator = new Calculator(tokens);
@@ -47,7 +47,7 @@ public class CalculateUnitTest {
         ArrayList<Token> tokens = new ArrayList<>();
         try {
             tokens = tokensReader.parseString("cos(1)");
-        } catch (InvaildTokenException e) {
+        } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
         Calculator calculator = new Calculator(tokens);
@@ -64,7 +64,7 @@ public class CalculateUnitTest {
         ArrayList<Token> tokens = new ArrayList<>();
         try {
             tokens = tokensReader.parseString("qwerty(1)");
-        } catch (InvaildTokenException e) {
+        } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
         Calculator calculator = new Calculator(tokens);
@@ -81,7 +81,7 @@ public class CalculateUnitTest {
         ArrayList<Token> tokens = new ArrayList<>();
         try {
             tokens = tokensReader.parseString("");
-        } catch (InvaildTokenException e) {
+        } catch (InvalidTokenException e) {
             assertEquals(e.getMessage(), "string is empty");
         }
     }

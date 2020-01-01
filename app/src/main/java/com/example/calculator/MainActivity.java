@@ -2,7 +2,6 @@ package com.example.calculator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                 ArrayList<Token> tokens = null;
                 try {
                     tokens = tokensReader.parseString(str);
-                } catch (InvaildTokenException e) {
+                } catch (InvalidTokenException e) {
                     textViewIsCheck.setText(e.getMessage());
                     tokens = null;
                 }
