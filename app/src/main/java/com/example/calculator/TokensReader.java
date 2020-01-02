@@ -26,6 +26,18 @@ class TokensReader {
         tokens = new ArrayList<>();
     }
 
+    private boolean checkBrackets() {
+        int countOfOpened = 0;
+        int countOfClosed = 0;
+        for (Token token : tokens) {
+            if (token.getType() == TypesOfToken.openBracket)
+                countOfOpened += 1;
+            if (token.getType() == TypesOfToken.closeBracket)
+                countOfClosed += 1;
+        }
+        return countOfOpened == countOfClosed;
+    }
+
     private void addToken(StringBuilder stringBuilerOfToken, TypesOfToken type) {
         String stringOfToken = stringBuilerOfToken.toString();
         Token token = new Token();
@@ -232,6 +244,9 @@ class TokensReader {
                     }
                     break;
             }
+        }
+        if (!checkBrackets()) {
+            throw new InvalidTokenException(") excepted");
         }
         string = stringBuilerOfToken.toString();
         if (!string.equals("")) {
