@@ -157,6 +157,9 @@ class TokensReader {
 
                 case reciveOperators:
                     if (plus || minus || div || mul || pow) {
+                        if (tokens.get(tokens.size() - 1).getType() == TypesOfToken.operator) {
+                            throw new InvalidTokenException(string.charAt(position) + " not excepted");
+                        }
                         stringBuilerOfToken.append(c);
                         position += 1;
                         state = StatesOfParse.reciveOperators;
