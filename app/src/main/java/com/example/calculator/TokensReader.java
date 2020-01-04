@@ -95,13 +95,13 @@ class TokensReader {
                     } else if (Character.isLetter(c)) {
                         state = StatesOfParse.reciveCharacters;
                     } else if (plus || minus || div || mul || pow) {
-                        throw new InvalidTokenException("operators not expected");
+                        throw new InvalidTokenException("operators not excepted");
                     } else if (openBracket) {
                         state = StatesOfParse.reciveOpenBracket;
                     } else if (closeBracket) {
-                        throw new InvalidTokenException("closeBracket not expected");
+                        throw new InvalidTokenException("closeBracket not excepted");
                     } else if (point) {
-                        throw new InvalidTokenException("point not expected");
+                        throw new InvalidTokenException("point not excepted");
                     } else {
                         throw new InvalidTokenException(string.charAt(position) + " not excepted");
                     }
@@ -149,7 +149,7 @@ class TokensReader {
                     } else if (closeBracket) {
                         throw new InvalidTokenException("close bracket not excepted");
                     } else if (point) {
-                        throw new InvalidTokenException("point not expected");
+                        throw new InvalidTokenException("point not excepted");
                     } else {
                         throw new InvalidTokenException(string.charAt(position) + " not excepted");
                     }
@@ -174,7 +174,7 @@ class TokensReader {
                     } else if (closeBracket) {
                         throw new InvalidTokenException("close bracket not excepted");
                     } else if (point) {
-                        throw new InvalidTokenException("point not expected");
+                        throw new InvalidTokenException("point not excepted");
                     } else {
                         throw new InvalidTokenException(string.charAt(position) + " not excepted");
                     }
@@ -191,13 +191,13 @@ class TokensReader {
                     } else if (Character.isLetter(c)) {
                         state = StatesOfParse.reciveCharacters;
                     } else if (plus || minus || div || mul || pow) {
-                        throw new InvalidTokenException("operators not expected");
+                        throw new InvalidTokenException("operators not excepted");
                     } else if (openBracket) {
                         state = StatesOfParse.reciveOpenBracket;
                     } else if (closeBracket) {
-                        throw new InvalidTokenException("closeBracket not expected");
+                        throw new InvalidTokenException("closeBracket not excepted");
                     } else if (point) {
-                        throw new InvalidTokenException("point not expected");
+                        throw new InvalidTokenException("point not excepted");
                     } else {
                         throw new InvalidTokenException(string.charAt(position) + " not excepted");
                     }
@@ -217,9 +217,9 @@ class TokensReader {
                     } else if (Character.isLetter(c)) {
                         state = StatesOfParse.reciveCharacters;
                     } else if (plus || minus || div || mul || pow) {
-                        throw new InvalidTokenException("operator not expected");
+                        throw new InvalidTokenException("operator not excepted");
                     } else if (point) {
-                        throw new InvalidTokenException("point not expected");
+                        throw new InvalidTokenException("point not excepted");
                     } else {
                         throw new InvalidTokenException(string.charAt(position) + " not excepted");
                     }
@@ -241,7 +241,7 @@ class TokensReader {
                     } else if (plus || minus || div || mul || pow) {
                         state = StatesOfParse.reciveOperators;
                     } else if (point) {
-                        throw new InvalidTokenException("point not expected");
+                        throw new InvalidTokenException("point not excepted");
                     } else {
                         throw new InvalidTokenException(string.charAt(position) + " not excepted");
                     }
