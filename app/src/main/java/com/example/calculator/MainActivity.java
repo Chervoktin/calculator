@@ -3,7 +3,6 @@ package com.example.calculator;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,28 +18,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         final EditText editTextStringToParse = findViewById(R.id.editText);
         final TextView textViewResult = findViewById(R.id.textViewResult);
-        Button button = findViewById(R.id.button);
+        final Button button = findViewById(R.id.button);
         final TextView textViewIsCheck = findViewById(R.id.textView);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String str = editTextStringToParse.getText().toString();
-                ArrayList<Token> tokens = null;
                 try {
-                    tokens = Parser.parse(str);
+                    String str = editTextStringToParse.getText().toString();
+                    ArrayList<Token> tokens = Parser.parse(str);
+                    textViewIsCheck.setText("");
+                    textViewResult.setText(Double.toString(Calculator.calculate(tokens)));
                 } catch (InvalidTokenException e) {
                     textViewIsCheck.setText(e.getMessage());
-                    tokens = null;
-                }
-                if (tokens != null) {
-                    textViewIsCheck.setText("");
-                    Calculator c = new Calculator(tokens);
-                    try {
-                        textViewIsCheck.setText("");
-                        textViewResult.setText(Double.toString(c.calculate()));
-                    } catch (FunctionNotFoundException e) {
-                        textViewIsCheck.setText(e.getMessage());
-                    }
+                } catch (FunctionNotFoundException e) {
+                    textViewIsCheck.setText(e.getMessage());
                 }
             }
         });

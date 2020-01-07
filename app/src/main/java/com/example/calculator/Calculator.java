@@ -19,17 +19,7 @@ class FunctionNotFoundException extends Exception {
 }
 
 class Calculator {
-    private ArrayList<Token> tokens;
-    Stack<Double> numbers;
-    Stack<Token> operatorsAndFunctions;
-
-    Calculator(ArrayList<Token> tokens) {
-        this.tokens = tokens;
-        numbers = new Stack<>();
-        operatorsAndFunctions = new Stack<>();
-    }
-
-    private double calculateOnStack(Token token) throws FunctionNotFoundException {
+    private static double calculateOnStack(Token token, Stack<Double> numbers) throws FunctionNotFoundException {
         boolean plus = token.getString().equals("+");
         boolean min = token.getString().equals("-");
         boolean umin = token.getString().equals("-u");
@@ -80,8 +70,9 @@ class Calculator {
         return result;
     }
 
-    public double calculate() throws FunctionNotFoundException {
-
+    public static double calculate(ArrayList<Token> tokens) throws FunctionNotFoundException {
+        Stack<Double> numbers = new Stack<>();
+        Stack<Token> operatorsAndFunctions = new Stack<>();
         int position = 0;
         StateOfCalculate state = StateOfCalculate.start;
         boolean number;
@@ -137,7 +128,7 @@ class Calculator {
                             operatorsAndFunctions.push(tokens.get(position));
                             position += 1;
                         } else {
-                            numbers.push(calculateOnStack(operatorsAndFunctions.pop()));
+                            numbers.push(calculateOnStack(operatorsAndFunctions.pop(), numbers));
 
                         }
                     } else if (closeBracket) {
@@ -173,7 +164,7 @@ class Calculator {
                         state = StateOfCalculate.openBracket;
                     } else if (closeBracket) {
                         if (operatorsAndFunctions.lastElement().getType() != TypesOfToken.openBracket) {
-                            numbers.push(calculateOnStack(operatorsAndFunctions.pop()));
+                            numbers.push(calculateOnStack(operatorsAndFunctions.pop(), numbers));
                         } else {
                             operatorsAndFunctions.pop();
                             position += 1;
@@ -182,7 +173,7 @@ class Calculator {
             }
         }
         while (operatorsAndFunctions.size() > 0) {
-            numbers.push(calculateOnStack(operatorsAndFunctions.pop()));
+            numbers.push(calculateOnStack(operatorsAndFunctions.pop(), numbers));
         }
         return numbers.pop();
     }
