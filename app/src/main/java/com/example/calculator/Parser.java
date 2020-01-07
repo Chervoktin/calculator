@@ -19,10 +19,10 @@ class InvalidTokenException extends Exception {
     }
 }
 
-class TokensReader {
+class Parser {
     ArrayList<Token> tokens;
 
-    TokensReader() {
+    Parser() {
         tokens = new ArrayList<>();
     }
 
@@ -68,7 +68,7 @@ class TokensReader {
         return position;
     }
 
-    public ArrayList<Token> parseString(String string) throws InvalidTokenException {
+    public ArrayList<Token> parse(String string) throws InvalidTokenException {
         if (string.length() == 0) {
             throw new InvalidTokenException("string is empty");
         }

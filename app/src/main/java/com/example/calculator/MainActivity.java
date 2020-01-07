@@ -24,11 +24,11 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TokensReader tokensReader = new TokensReader();
+                Parser parser = new Parser();
                 String str = editTextStringToParse.getText().toString();
                 ArrayList<Token> tokens = null;
                 try {
-                    tokens = tokensReader.parseString(str);
+                    tokens = parser.parse(str);
                 } catch (InvalidTokenException e) {
                     textViewIsCheck.setText(e.getMessage());
                     tokens = null;
