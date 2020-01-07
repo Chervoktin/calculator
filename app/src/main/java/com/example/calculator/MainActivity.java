@@ -24,11 +24,10 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Parser parser = new Parser();
                 String str = editTextStringToParse.getText().toString();
                 ArrayList<Token> tokens = null;
                 try {
-                    tokens = parser.parse(str);
+                    tokens = Parser.parse(str);
                 } catch (InvalidTokenException e) {
                     textViewIsCheck.setText(e.getMessage());
                     tokens = null;
@@ -41,11 +40,6 @@ public class MainActivity extends AppCompatActivity {
                         textViewResult.setText(Double.toString(c.calculate()));
                     } catch (FunctionNotFoundException e) {
                         textViewIsCheck.setText(e.getMessage());
-                    }
-                    for (Token token : tokens) {
-                        Log.e("Test", token.getString()
-                                + " type:" + token.getType()
-                                + "Priority:" + token.getPriority());
                     }
                 }
             }

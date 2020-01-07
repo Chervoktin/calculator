@@ -9,10 +9,9 @@ import static org.junit.Assert.*;
 public class CalculateUnitTest {
     @Test
     public void calculateIsCorrect() {
-        Parser parser = new Parser();
         ArrayList<Token> tokens = new ArrayList<>();
         try {
-            tokens = parser.parse("2^3+2*(3+4/2-(1+2))*2+sin(1)+cos(2)+tan(0.5)");
+            tokens = Parser.parse("2^3+2*(3+4/2-(1+2))*2+sin(1)+cos(2)+tan(0.5)");
         } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
@@ -26,10 +25,9 @@ public class CalculateUnitTest {
 
     @Test
     public void calculateSinIsCorrect() {
-        Parser parser = new Parser();
         ArrayList<Token> tokens = new ArrayList<>();
         try {
-            tokens = parser.parse("sin(1)");
+            tokens = Parser.parse("sin(1)");
         } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
@@ -43,10 +41,9 @@ public class CalculateUnitTest {
 
     @Test
     public void calculateCosIsCorrect() {
-        Parser parser = new Parser();
         ArrayList<Token> tokens = new ArrayList<>();
         try {
-            tokens = parser.parse("cos(1)");
+            tokens = Parser.parse("cos(1)");
         } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
@@ -60,10 +57,9 @@ public class CalculateUnitTest {
 
     @Test
     public void FunctionNotFoundExceptionIsCorrect() {
-        Parser parser = new Parser();
         ArrayList<Token> tokens = new ArrayList<>();
         try {
-            tokens = parser.parse("qwerty(1)");
+            tokens = Parser.parse("qwerty(1)");
         } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
@@ -77,10 +73,9 @@ public class CalculateUnitTest {
 
     @Test
     public void TokenInvaildExceptionIsCorrect() {
-        Parser parser = new Parser();
         ArrayList<Token> tokens = new ArrayList<>();
         try {
-            tokens = parser.parse("");
+            tokens = Parser.parse("");
         } catch (InvalidTokenException e) {
             assertEquals(e.getMessage(), "string is empty");
         }

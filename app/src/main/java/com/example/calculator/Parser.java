@@ -20,13 +20,8 @@ class InvalidTokenException extends Exception {
 }
 
 class Parser {
-    ArrayList<Token> tokens;
 
-    Parser() {
-        tokens = new ArrayList<>();
-    }
-
-    private boolean checkBrackets() {
+    private static boolean checkBrackets(ArrayList<Token> tokens) {
         int countOfOpened = 0;
         int countOfClosed = 0;
         for (Token token : tokens) {
@@ -38,7 +33,7 @@ class Parser {
         return countOfOpened == countOfClosed;
     }
 
-    private void addToken(StringBuilder stringBuilerOfToken, TypesOfToken type) {
+    private static void addToken(StringBuilder stringBuilerOfToken, TypesOfToken type, ArrayList<Token> tokens) {
         String stringOfToken = stringBuilerOfToken.toString();
         Token token = new Token();
         token.setToken(stringOfToken, type);
@@ -46,7 +41,7 @@ class Parser {
         stringBuilerOfToken.setLength(0);
     }
 
-    private int reciveNumber(StringBuilder stringBuilerOfToken, String string, Integer position) throws InvalidTokenException {
+    private static int reciveNumber(StringBuilder stringBuilerOfToken, String string, Integer position, ArrayList<Token> tokens) throws InvalidTokenException {
         boolean flag = false;
         char c = string.charAt(position);
         boolean isDigit = Character.isDigit(c);
@@ -68,7 +63,8 @@ class Parser {
         return position;
     }
 
-    public ArrayList<Token> parse(String string) throws InvalidTokenException {
+    public static ArrayList<Token> parse(String string) throws InvalidTokenException {
+        ArrayList<Token> tokens = new ArrayList<>();
         if (string.length() == 0) {
             throw new InvalidTokenException("string is empty");
         }
@@ -108,9 +104,9 @@ class Parser {
                     break;
                 case reciveDigital:
                     if (Character.isDigit(c)) {
-                        position = reciveNumber(stringBuilerOfToken, string, position);
+                        position = reciveNumber(stringBuilerOfToken, string, position, tokens);
                         state = StatesOfParse.reciveDigital;
-                        addToken(stringBuilerOfToken, TypesOfToken.number);
+                        addToken(stringBuilerOfToken, TypesOfToken.number, tokens);
                         break;
                     } else if (Character.isLetter(c)) {
                         throw new InvalidTokenException("character is not excepted");
@@ -139,7 +135,7 @@ class Parser {
                             }
                             state = StatesOfParse.reciveCharacters;
                         }
-                        addToken(stringBuilerOfToken, TypesOfToken.function);
+                        addToken(stringBuilerOfToken, TypesOfToken.function, tokens);
                     } else if (Character.isDigit(c)) {
                         state = StatesOfParse.reciveDigital;
                     } else if (plus || minus || div || mul || pow) {
@@ -163,7 +159,7 @@ class Parser {
                         stringBuilerOfToken.append(c);
                         position += 1;
                         state = StatesOfParse.reciveOperators;
-                        addToken(stringBuilerOfToken, TypesOfToken.operator);
+                        addToken(stringBuilerOfToken, TypesOfToken.operator, tokens);
                         break;
                     } else if (Character.isDigit(c)) {
                         state = StatesOfParse.reciveDigital;
@@ -187,7 +183,7 @@ class Parser {
                         stringBuilerOfToken.append('u');
                         position += 1;
                         state = StatesOfParse.start;
-                        addToken(stringBuilerOfToken, TypesOfToken.operator);
+                        addToken(stringBuilerOfToken, TypesOfToken.operator, tokens);
                     } else if (Character.isLetter(c)) {
                         state = StatesOfParse.reciveCharacters;
                     } else if (plus || minus || div || mul || pow) {
@@ -207,7 +203,7 @@ class Parser {
                         stringBuilerOfToken.append(c);
                         position += 1;
                         state = StatesOfParse.reciveOpenBracket;
-                        addToken(stringBuilerOfToken, TypesOfToken.openBracket);
+                        addToken(stringBuilerOfToken, TypesOfToken.openBracket, tokens);
                     } else if (closeBracket) {
                         throw new InvalidTokenException("close bracket not excepted");
                     } else if (minus) {
@@ -229,7 +225,7 @@ class Parser {
                         stringBuilerOfToken.append(c);
                         position += 1;
                         state = StatesOfParse.reciveCloseBracket;
-                        addToken(stringBuilerOfToken, TypesOfToken.closeBracket);
+                        addToken(stringBuilerOfToken, TypesOfToken.closeBracket, tokens);
                     } else if (openBracket) {
                         state = StatesOfParse.reciveOpenBracket;
                     } else if (minus) {
@@ -248,7 +244,7 @@ class Parser {
                     break;
             }
         }
-        if (!checkBrackets()) {
+        if (!checkBrackets(tokens)) {
             throw new InvalidTokenException(") excepted");
         }
         string = stringBuilerOfToken.toString();
