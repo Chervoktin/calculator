@@ -10,6 +10,7 @@ public class Token {
     private TypesOfToken type;
     private String string;
     private int priority = -1;
+    private double number;
 
     public TypesOfToken getType() {
         return type;
@@ -41,6 +42,15 @@ public class Token {
                 break;
         }
         return isNameOfFunction;
+    }
+
+    public void setToken(double number) {
+        this.number = number;
+        this.type = TypesOfToken.number;
+    }
+
+    public double getNumber() {
+        return this.number;
     }
 
     public void setToken(String string, TypesOfToken type) {
