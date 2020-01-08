@@ -1,5 +1,7 @@
 package com.example.calculator;
 
+import android.util.Log;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -8,6 +10,19 @@ import static org.junit.Assert.*;
 
 public class CalculateUnitTest {
     @Test
+    public void leftTrapezoidApproximateIsCorrect() {
+        try {
+            double result = Calculator.leftTrapezoidApproximation("cos(x)/(x+2)", 0.4, 1.2, 100);
+            assertEquals(result, 0.19898, 0.00001);
+
+        } catch (InvalidTokenException e) {
+            assertTrue(e.getMessage(), false);
+        } catch (FunctionNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void calculateIsCorrect() {
         ArrayList<Token> tokens = new ArrayList<>();
         try {
@@ -15,9 +30,8 @@ public class CalculateUnitTest {
         } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
-        Calculator calculator = new Calculator(tokens);
         try {
-            assertEquals(calculator.calculate(), Math.pow(2, 3) + 2 * (3 + 4 / 2 - (1 + 2)) * 2 + Math.sin(1) + Math.cos(2) + Math.tan(0.5), 0.0);
+            assertEquals(Calculator.calculate(tokens), Math.pow(2, 3) + 2 * (3 + 4 / 2 - (1 + 2)) * 2 + Math.sin(1) + Math.cos(2) + Math.tan(0.5), 0.0);
         } catch (FunctionNotFoundException e) {
             assertTrue(e.getMessage(), false);
         }
@@ -31,9 +45,8 @@ public class CalculateUnitTest {
         } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
-        Calculator calculator = new Calculator(tokens);
         try {
-            assertEquals(calculator.calculate(), Math.sin(1), 0.0);
+            assertEquals(Calculator.calculate(tokens), Math.sin(1), 0.0);
         } catch (FunctionNotFoundException e) {
             assertTrue(e.getMessage(), false);
         }
@@ -47,9 +60,8 @@ public class CalculateUnitTest {
         } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
-        Calculator calculator = new Calculator(tokens);
         try {
-            assertEquals(calculator.calculate(), Math.cos(1), 0.0);
+            assertEquals(Calculator.calculate(tokens), Math.cos(1), 0.0);
         } catch (FunctionNotFoundException e) {
             assertTrue(e.getMessage(), false);
         }
@@ -63,9 +75,8 @@ public class CalculateUnitTest {
         } catch (InvalidTokenException e) {
             assertTrue(e.getMessage(), false);
         }
-        Calculator calculator = new Calculator(tokens);
         try {
-            assertEquals(calculator.calculate(), Math.cos(1), 0.0);
+            assertEquals(Calculator.calculate(tokens), Math.cos(1), 0.0);
         } catch (FunctionNotFoundException e) {
             assertEquals(e.getMessage(), "function qwerty not found");
         }
