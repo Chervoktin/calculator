@@ -36,9 +36,17 @@ class Parser {
     private static void addToken(StringBuilder stringBuilerOfToken, TypesOfToken type, ArrayList<Token> tokens) {
         String stringOfToken = stringBuilerOfToken.toString();
         Token token = new Token();
-        token.setToken(stringOfToken, type);
-        tokens.add(token);
-        stringBuilerOfToken.setLength(0);
+        try {
+            double number = Double.parseDouble(stringOfToken);
+            token.setToken(number);
+            tokens.add(token);
+            stringBuilerOfToken.setLength(0);
+        } catch (Exception e) {
+            token.setToken(stringOfToken, type);
+            tokens.add(token);
+            stringBuilerOfToken.setLength(0);
+        }
+
     }
 
     private static int reciveNumber(StringBuilder stringBuilerOfToken, String string, Integer position, ArrayList<Token> tokens) throws InvalidTokenException {
@@ -62,6 +70,7 @@ class Parser {
         }
         return position;
     }
+
 
     public static ArrayList<Token> parse(String string) throws InvalidTokenException {
         ArrayList<Token> tokens = new ArrayList<>();
@@ -135,7 +144,11 @@ class Parser {
                             }
                             state = StatesOfParse.reciveCharacters;
                         }
-                        addToken(stringBuilerOfToken, TypesOfToken.function, tokens);
+                        if (stringBuilerOfToken.toString().length() == 1) {
+                            addToken(stringBuilerOfToken, TypesOfToken.varible, tokens);
+                        } else {
+                            addToken(stringBuilerOfToken, TypesOfToken.function, tokens);
+                        }
                     } else if (Character.isDigit(c)) {
                         state = StatesOfParse.reciveDigital;
                     } else if (plus || minus || div || mul || pow) {
@@ -143,7 +156,11 @@ class Parser {
                     } else if (openBracket) {
                         state = StatesOfParse.reciveOpenBracket;
                     } else if (closeBracket) {
-                        throw new InvalidTokenException("close bracket not excepted");
+                        if (tokens.get(tokens.size() - 1).getType() == TypesOfToken.varible) {
+                            state = StatesOfParse.reciveCloseBracket;
+                        } else {
+                            throw new InvalidTokenException("close bracket not excepted");
+                        }
                     } else if (point) {
                         throw new InvalidTokenException("point not excepted");
                     } else {
