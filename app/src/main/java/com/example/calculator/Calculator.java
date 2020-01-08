@@ -3,6 +3,9 @@ package com.example.calculator;
 import java.util.ArrayList;
 import java.util.Stack;
 
+
+import static com.example.calculator.TypesOfToken.*;
+
 enum StateOfCalculate {
     start,
     number,
@@ -19,6 +22,28 @@ class FunctionNotFoundException extends Exception {
 }
 
 class Calculator {
+
+    public static double leftTrapezoidApproximation(String integral, double a, double b, int n) throws InvalidTokenException, FunctionNotFoundException {
+        double delta = (b - a) / n;
+        double x = a + delta;
+        double sum = 0;
+        double f1;
+        double fn;
+        ArrayList<Token> tokens = Parser.parse(integral);
+        for (int i = 1; i < n; i++) {
+            tokens = Parser.parse(integral);
+            sum += Calculator.calculate(tokens,x);
+            x += delta;
+        }
+        tokens = Parser.parse(integral);
+        f1 = Calculator.calculate(tokens, a);
+        tokens = Parser.parse(integral);
+        fn = Calculator.calculate(tokens, x);
+        sum += (f1 + fn) / 2;
+        sum *= delta;
+        return sum;
+    }
+
     private static double calculateOnStack(Token token, Stack<Double> numbers) throws FunctionNotFoundException {
         boolean plus = token.getString().equals("+");
         boolean min = token.getString().equals("-");
@@ -70,6 +95,15 @@ class Calculator {
         return result;
     }
 
+    public static double calculate(ArrayList<Token> tokens, double varibale) throws FunctionNotFoundException {
+        for (Token token : tokens) {
+            if (token.getType() == TypesOfToken.varible) {
+                token.setToken(varibale);
+            }
+        }
+        return calculate(tokens);
+    }
+
     public static double calculate(ArrayList<Token> tokens) throws FunctionNotFoundException {
         Stack<Double> numbers = new Stack<>();
         Stack<Token> operatorsAndFunctions = new Stack<>();
@@ -107,7 +141,7 @@ class Calculator {
                 case number:
                     if (number) {
                         state = StateOfCalculate.number;
-                        numbers.push(Double.parseDouble(tokens.get(position).getString()));
+                        numbers.push(tokens.get(position).getNumber());
                         position += 1;
                     } else if (operator) {
                         state = StateOfCalculate.operator;
