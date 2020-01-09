@@ -3,12 +3,10 @@ package com.example.calculator;
 import java.util.ArrayList;
 import java.util.Stack;
 
-
-import static com.example.calculator.TypesOfToken.*;
-
 enum StateOfCalculate {
     start,
     number,
+    varible,
     operator,
     function,
     openBracket,
@@ -31,13 +29,10 @@ class Calculator {
         double fn;
         ArrayList<Token> tokens = Parser.parse(integral);
         for (int i = 1; i < n; i++) {
-            tokens = Parser.parse(integral);
-            sum += Calculator.calculate(tokens,x);
+            sum += Calculator.calculate(tokens, x);
             x += delta;
         }
-        tokens = Parser.parse(integral);
         f1 = Calculator.calculate(tokens, a);
-        tokens = Parser.parse(integral);
         fn = Calculator.calculate(tokens, x);
         sum += (f1 + fn) / 2;
         sum *= delta;
@@ -98,7 +93,7 @@ class Calculator {
     public static double calculate(ArrayList<Token> tokens, double varibale) throws FunctionNotFoundException {
         for (Token token : tokens) {
             if (token.getType() == TypesOfToken.varible) {
-                token.setToken(varibale);
+                token.setToken(varibale, TypesOfToken.varible);
             }
         }
         return calculate(tokens);
@@ -115,6 +110,7 @@ class Calculator {
         boolean function;
         boolean closeBracket;
         boolean openBracket;
+        boolean varible;
         while (position < tokens.size()) {
             number = tokens.get(position).getType() == TypesOfToken.number;
             operator = tokens.get(position).getType() == TypesOfToken.operator;
@@ -122,9 +118,10 @@ class Calculator {
             function = tokens.get(position).getType() == TypesOfToken.function;
             closeBracket = tokens.get(position).getType() == TypesOfToken.closeBracket;
             openBracket = tokens.get(position).getType() == TypesOfToken.openBracket;
+            varible = tokens.get(position).getType() == TypesOfToken.varible;
             switch (state) {
                 case start:
-                    if (number) {
+                    if (number || varible) {
                         state = StateOfCalculate.number;
                     } else if (operator) {
                         state = StateOfCalculate.operator;
@@ -139,7 +136,8 @@ class Calculator {
                     }
                     break;
                 case number:
-                    if (number) {
+                case varible:
+                    if (number || varible) {
                         state = StateOfCalculate.number;
                         numbers.push(tokens.get(position).getNumber());
                         position += 1;
@@ -151,7 +149,7 @@ class Calculator {
                     break;
                 case function:
                 case operator:
-                    if (number) {
+                    if (number || varible) {
                         state = StateOfCalculate.number;
                     } else if (operator || function) {
 
@@ -174,7 +172,7 @@ class Calculator {
                     }
                     break;
                 case openBracket:
-                    if (number) {
+                    if (number || varible) {
                         state = StateOfCalculate.number;
                     } else if (operator) {
                         state = StateOfCalculate.operator;
@@ -188,7 +186,7 @@ class Calculator {
                     }
                     break;
                 case closeBracket:
-                    if (number) {
+                    if (number || varible) {
                         state = StateOfCalculate.number;
                     } else if (operator) {
                         state = StateOfCalculate.operator;
