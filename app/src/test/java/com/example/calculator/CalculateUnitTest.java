@@ -1,7 +1,5 @@
 package com.example.calculator;
 
-import android.util.Log;
-
 import org.junit.Test;
 
 import java.util.ArrayList;
