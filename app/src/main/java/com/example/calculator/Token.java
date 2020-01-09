@@ -44,9 +44,9 @@ public class Token {
         return isNameOfFunction;
     }
 
-    public void setToken(double number) {
+    public void setToken(double number, TypesOfToken type) {
         this.number = number;
-        this.type = TypesOfToken.number;
+        this.type = type;
     }
 
     public double getNumber() {
