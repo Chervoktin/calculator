@@ -38,7 +38,7 @@ class Parser {
         Token token = new Token();
         try {
             double number = Double.parseDouble(stringOfToken);
-            token.setToken(number);
+            token.setToken(number, TypesOfToken.number);
             tokens.add(token);
             stringBuilerOfToken.setLength(0);
         } catch (Exception e) {
