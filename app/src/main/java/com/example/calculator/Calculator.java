@@ -21,24 +21,6 @@ class FunctionNotFoundException extends Exception {
 
 class Calculator {
 
-    public static double leftTrapezoidApproximation(String integral, double a, double b, int n) throws InvalidTokenException, FunctionNotFoundException {
-        double delta = (b - a) / n;
-        double x = a + delta;
-        double sum = 0;
-        double f1;
-        double fn;
-        ArrayList<Token> tokens = Parser.parse(integral);
-        for (int i = 1; i < n; i++) {
-            sum += Calculator.calculate(tokens, x);
-            x += delta;
-        }
-        f1 = Calculator.calculate(tokens, a);
-        fn = Calculator.calculate(tokens, x);
-        sum += (f1 + fn) / 2;
-        sum *= delta;
-        return sum;
-    }
-
     private static double calculateOnStack(Token token, Stack<Double> numbers) throws FunctionNotFoundException {
         boolean plus = token.getString().equals("+");
         boolean min = token.getString().equals("-");
