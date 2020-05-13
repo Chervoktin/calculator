@@ -16,10 +16,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final EditText editTextStringToParse = findViewById(R.id.editText);
+
+        final EditText editTextStringToParse = findViewById(R.id.editTextIntegral);
+        final EditText editTextA = findViewById(R.id.editTextA);
+        final EditText editTextB = findViewById(R.id.editTextB);
+        final EditText editTextN = findViewById(R.id.editTextN);
+
         final TextView textViewResult = findViewById(R.id.textViewResult);
-        final Button button = findViewById(R.id.button);
         final TextView textViewIsCheck = findViewById(R.id.textView);
+        final Button button = findViewById(R.id.button);
+
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -27,7 +34,13 @@ public class MainActivity extends AppCompatActivity {
                     String str = editTextStringToParse.getText().toString();
                     ArrayList<Token> tokens = Parser.parse(str);
                     textViewIsCheck.setText("");
-                    textViewResult.setText(Double.toString(Calculator.calculate(tokens)));
+
+                    double a = Double.parseDouble(editTextA.getText().toString());
+                    double b = Double.parseDouble(editTextB.getText().toString());
+                    int n = Integer.parseInt(editTextN.getText().toString());
+                    double result = Calculator.leftTrapezoidApproximation(str, a, b, n);
+
+                    textViewResult.setText(Double.toString(result));
                 } catch (InvalidTokenException e) {
                     textViewIsCheck.setText(e.getMessage());
                 } catch (FunctionNotFoundException e) {
