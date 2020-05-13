@@ -32,21 +32,30 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     String str = editTextStringToParse.getText().toString();
-                    ArrayList<Token> tokens = Parser.parse(str);
+                    final ArrayList<Token> tokens = Parser.parse(str);
                     textViewIsCheck.setText("");
 
                     double a = Double.parseDouble(editTextA.getText().toString());
                     double b = Double.parseDouble(editTextB.getText().toString());
                     int n = Integer.parseInt(editTextN.getText().toString());
-                    double result = Calculator.leftTrapezoidApproximation(str, a, b, n);
-
+                    LeftTrapezoidApproximation leftTrapezoidApproximation = new LeftTrapezoidApproximation();
+                    final double result = leftTrapezoidApproximation.calculate(new IFunction() {
+                        @Override
+                        public double calculate(double varible) {
+                            double result = 0;
+                            try{
+                               result = Calculator.calculate(tokens,varible);
+                            }catch (FunctionNotFoundException e){
+                                 textViewIsCheck.setText(e.getMessage());
+                            }
+                            return result;
+                        }
+                    },a,b,n);
                     textViewResult.setText(Double.toString(result));
                 } catch (InvalidTokenException e) {
                     textViewIsCheck.setText(e.getMessage());
-                } catch (FunctionNotFoundException e) {
-                    textViewIsCheck.setText(e.getMessage());
-                }
-            }
+
+            }}
         });
     }
 }

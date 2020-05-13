@@ -3,7 +3,7 @@ package com.example.calculator;
 import java.util.ArrayList;
 
 public class LeftTrapezoidApproximation {
-    public double calculate(IFunction function, double a, double b, int n) throws InvalidTokenException, FunctionNotFoundException {
+    public double calculate(IFunction function, double a, double b, int n) {
         double delta = (b - a) / n;
         double x = a + delta;
         double sum = 0;
