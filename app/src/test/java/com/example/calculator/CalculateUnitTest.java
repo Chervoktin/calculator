@@ -10,7 +10,13 @@ public class CalculateUnitTest {
     @Test
     public void leftTrapezoidApproximateIsCorrect() {
         try {
-            double result = Calculator.leftTrapezoidApproximation("cos(x)/(x+2)", 0.4, 1.2, 100);
+            LeftTrapezoidApproximation leftTrapezoidApproximation = new LeftTrapezoidApproximation();
+            double result = leftTrapezoidApproximation.calculate(new IFunction() {
+                @Override
+                public double calculate(double varible) {
+                    return Math.cos(varible) / (varible + 2);
+                }
+            }, 0.4, 1.2, 100);
             assertEquals(result, 0.19898, 0.00001);
 
         } catch (InvalidTokenException e) {
