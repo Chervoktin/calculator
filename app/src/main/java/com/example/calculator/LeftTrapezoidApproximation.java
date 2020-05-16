@@ -2,7 +2,6 @@ package com.example.calculator;
 
 import android.os.Message;
 import android.os.Handler;
-import android.util.Log;
 
 public class LeftTrapezoidApproximation {
     private Handler handler = null;
