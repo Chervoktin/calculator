@@ -9,7 +9,6 @@ import static org.junit.Assert.*;
 public class CalculateUnitTest {
     @Test
     public void leftTrapezoidApproximateIsCorrect() {
-        try {
             LeftTrapezoidApproximation leftTrapezoidApproximation = new LeftTrapezoidApproximation();
             double result = leftTrapezoidApproximation.calculate(new IFunction() {
                 @Override
@@ -18,12 +17,6 @@ public class CalculateUnitTest {
                 }
             }, 0.4, 1.2, 100);
             assertEquals(result, 0.19898, 0.00001);
-
-        } catch (InvalidTokenException e) {
-            assertTrue(e.getMessage(), false);
-        } catch (FunctionNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     @Test
