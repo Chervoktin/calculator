@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,27 +24,60 @@ public class MainActivity extends AppCompatActivity {
     TextView textViewIsCheck;
     Handler handler;
     TextView textViewResult;
+    ProgressBar progressBar;
+
+    final int SHOW_RESULT = 1;
+    final int SHOW_ERROR = 2;
+    final int SHOW_PROGRESS = 3;
+
+    private class HandlerIntegral extends Handler {
+
+        private final WeakReference<MainActivity> weakReferenceMainActivity;
+
+        public HandlerIntegral(MainActivity mainActivity) {
+            this.weakReferenceMainActivity = new WeakReference<MainActivity>(mainActivity);
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            MainActivity activity = this.weakReferenceMainActivity.get();
+            if (activity != null) {
+                switch (msg.what) {
+                    case SHOW_RESULT:
+                        Log.e("test",Integer.toString(msg.what));
+                        activity.textViewResult.setText((String) msg.obj);
+                        break;
+                    case SHOW_ERROR:
+                        activity.textViewIsCheck.setText((String) msg.obj);
+                        break;
+                    case SHOW_PROGRESS:
+                        activity.textViewIsCheck.setText(Integer.toString((int)msg.obj));
+                        activity.progressBar.setProgress((int)msg.obj);
+                        break;
+                }
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        progressBar = findViewById(R.id.progressBar);
+
         editTextStringToParse = findViewById(R.id.editTextIntegral);
         editTextA = findViewById(R.id.editTextA);
         editTextB = findViewById(R.id.editTextB);
         editTextN = findViewById(R.id.editTextN);
-        textViewResult = findViewById(R.id.textViewResult);
-        final int SHOW_RESULT = 1;
-        handler = new Handler(){
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                switch (msg.what){
-                    case SHOW_RESULT:
-                        textViewResult.setText((String)msg.obj);
-                }
-            }
-        };
 
-        textViewIsCheck = findViewById(R.id.textView);
+        textViewResult = findViewById(R.id.textViewResult);
+        textViewIsCheck = findViewById(R.id.textViewIsCheck);
+
+        handler = new HandlerIntegral(this);
+
+
+
         Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,22 +96,21 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             LeftTrapezoidApproximation leftTrapezoidApproximation = new LeftTrapezoidApproximation();
+                            leftTrapezoidApproximation.setHandler(handler);
                             final double result = leftTrapezoidApproximation.calculate(new IFunction() {
                                 @Override
                                 public double calculate(double varible) {
                                     double result = 0;
-                                    try{
-                                        result = Calculator.calculate(tokens,varible);
-                                    }catch (FunctionNotFoundException e){
-                          //              textViewIsCheck.setText(e.getMessage());
+                                    try {
+                                        result = Calculator.calculate(tokens, varible);
+                                    } catch (FunctionNotFoundException e) {
+
                                     }
                                     return result;
                                 }
-                            },a,b,n);
-                            Message msg = handler.obtainMessage(SHOW_RESULT,Double.toString(result));
+                            }, a, b, n);
+                            Message msg = handler.obtainMessage(SHOW_RESULT, Double.toString(result));
                             handler.sendMessage(msg);
-                            Log.e("test",Double.toString(result));
-                        //    textViewResult.setText(Double.toString(result));
                         }
                     };
                     Thread th = new Thread(runnable);
@@ -84,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
 
                 } catch (InvalidTokenException e) {
                     textViewIsCheck.setText(e.getMessage());
-
-            }}
+                }
+            }
         });
     }
 }
