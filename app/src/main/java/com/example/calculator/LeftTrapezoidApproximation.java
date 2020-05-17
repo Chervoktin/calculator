@@ -5,6 +5,11 @@ import android.os.Handler;
 
 public class LeftTrapezoidApproximation {
     private Handler handler = null;
+    private boolean stop = false;
+
+    public void stopCalculate() {
+        this.stop = true;
+    }
 
     public void setHandler(Handler handler) {
         this.handler = handler;
@@ -20,12 +25,14 @@ public class LeftTrapezoidApproximation {
         int per = 0;
         int prev = 0;
         for (int i = 1; i < n; i++) {
+            if (stop) {
+                break;
+            }
             prev = per;
-            per = i / (n / 100);
+            per = (int) ((double) i / (n / 100.0));
             if (handler != null) {
-
                 if (per != prev) {
-                    Message msg = handler.obtainMessage(SHOW_PROGRESS, per );
+                    Message msg = handler.obtainMessage(SHOW_PROGRESS, per);
                     handler.sendMessage(msg);
                 }
             }
@@ -36,9 +43,11 @@ public class LeftTrapezoidApproximation {
         fn = function.calculate(x);
         sum += (f1 + fn) / 2;
         sum *= delta;
-        if(handler != null){
-            Message msg = handler.obtainMessage(SHOW_PROGRESS, 100 );
-            handler.sendMessage(msg);
+        if (handler != null) {
+            if (!stop) {
+                Message msg = handler.obtainMessage(SHOW_PROGRESS, 100);
+                handler.sendMessage(msg);
+            }
         }
         return sum;
     }
