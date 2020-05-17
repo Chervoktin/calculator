@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     EditText editTextStringToParse;
@@ -25,10 +24,75 @@ public class MainActivity extends AppCompatActivity {
     Handler handler;
     TextView textViewResult;
     ProgressBar progressBar;
+    Thread thread = null;
+    RunnableCalculate runnableCalculate;
 
     final int SHOW_RESULT = 1;
     final int SHOW_ERROR = 2;
     final int SHOW_PROGRESS = 3;
+
+    class RunnableCalculate implements Runnable {
+
+        private double a;
+        private double b;
+        private int n;
+        private String function;
+        private boolean stop = false;
+        LeftTrapezoidApproximation leftTrapezoidApproximation;
+
+        public void setFunction(String function) {
+            this.function = function;
+        }
+
+        public void setA(double a) {
+            this.a = a;
+        }
+
+        public void setB(double b) {
+            this.b = b;
+        }
+
+        public void setN(int n) {
+            this.n = n;
+        }
+
+        public void close() {
+            stop = true;
+            leftTrapezoidApproximation.stopCalculate();
+        }
+
+        @Override
+        public void run() {
+            leftTrapezoidApproximation = new LeftTrapezoidApproximation();
+            leftTrapezoidApproximation.setHandler(handler);
+            final double result = leftTrapezoidApproximation.calculate(new IFunction() {
+                @Override
+                public double calculate(double varible) {
+                    double result = 0;
+                    try {
+                        result = Calculator.calculate(Parser.parse(function), varible);
+                    } catch (FunctionNotFoundException e) {
+
+                    } catch (InvalidTokenException e) {
+                        Message msg = handler.obtainMessage(SHOW_ERROR, e.getMessage());
+                        handler.sendMessage(msg);
+                    }
+                    return result;
+                }
+            }, a, b, n);
+            Message msg;
+            if(stop){
+                msg = handler.obtainMessage(SHOW_RESULT, "");
+                handler.sendMessage(msg);
+                msg = handler.obtainMessage(SHOW_PROGRESS, 0);
+                handler.sendMessage(msg);
+            }else{
+                msg = handler.obtainMessage(SHOW_RESULT, Double.toString(result));
+                handler.sendMessage(msg);
+            }
+
+        }
+    }
 
     private class HandlerIntegral extends Handler {
 
@@ -44,15 +108,15 @@ public class MainActivity extends AppCompatActivity {
             if (activity != null) {
                 switch (msg.what) {
                     case SHOW_RESULT:
-                        Log.e("test",Integer.toString(msg.what));
+                        Log.e("test", Integer.toString(msg.what));
                         activity.textViewResult.setText((String) msg.obj);
                         break;
                     case SHOW_ERROR:
                         activity.textViewIsCheck.setText((String) msg.obj);
                         break;
                     case SHOW_PROGRESS:
-                        activity.textViewIsCheck.setText(Integer.toString((int)msg.obj));
-                        activity.progressBar.setProgress((int)msg.obj);
+                        activity.textViewIsCheck.setText(Integer.toString((int) msg.obj));
+                        activity.progressBar.setProgress((int) msg.obj);
                         break;
                 }
             }
@@ -76,49 +140,34 @@ public class MainActivity extends AppCompatActivity {
 
         handler = new HandlerIntegral(this);
 
+        Button buttonStop = findViewById(R.id.buttonStop);
+        buttonStop.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                runnableCalculate.close();
+            }
+        });
 
         Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    String str = editTextStringToParse.getText().toString();
-                    final ArrayList<Token> tokens = Parser.parse(str);
-                    textViewIsCheck.setText("");
+                String str = editTextStringToParse.getText().toString();
+                textViewIsCheck.setText("");
 
-                    final double a = Double.parseDouble(editTextA.getText().toString());
-                    final double b = Double.parseDouble(editTextB.getText().toString());
-                    final int n = Integer.parseInt(editTextN.getText().toString());
-                    final int SHOW_RESULT = 1;
+                final double a = Double.parseDouble(editTextA.getText().toString());
+                final double b = Double.parseDouble(editTextB.getText().toString());
+                final int n = Integer.parseInt(editTextN.getText().toString());
 
-                    Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            LeftTrapezoidApproximation leftTrapezoidApproximation = new LeftTrapezoidApproximation();
-                            leftTrapezoidApproximation.setHandler(handler);
-                            final double result = leftTrapezoidApproximation.calculate(new IFunction() {
-                                @Override
-                                public double calculate(double varible) {
-                                    double result = 0;
-                                    try {
-                                        result = Calculator.calculate(tokens, varible);
-                                    } catch (FunctionNotFoundException e) {
+                runnableCalculate = new RunnableCalculate();
+                runnableCalculate.setA(a);
+                runnableCalculate.setB(b);
+                runnableCalculate.setN(n);
+                runnableCalculate.setFunction(str);
+                thread = new Thread(runnableCalculate);
+                thread.start();
 
-                                    }
-                                    return result;
-                                }
-                            }, a, b, n);
-                            Message msg = handler.obtainMessage(SHOW_RESULT, Double.toString(result));
-                            handler.sendMessage(msg);
-                        }
-                    };
-                    Thread th = new Thread(runnable);
-                    th.start();
-
-                } catch (InvalidTokenException e) {
-                    textViewIsCheck.setText(e.getMessage());
-                }
             }
         });
     }
