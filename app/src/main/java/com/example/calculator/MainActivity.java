@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     } catch (FunctionNotFoundException e) {
 
                     } catch (InvalidTokenException e) {
+                        close();
                         Message msg = handler.obtainMessage(SHOW_ERROR, e.getMessage());
                         handler.sendMessage(msg);
                     }
@@ -84,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
             if(stop){
                 msg = handler.obtainMessage(SHOW_RESULT, "");
                 handler.sendMessage(msg);
-                msg = handler.obtainMessage(SHOW_PROGRESS, 0);
-                handler.sendMessage(msg);
+               // msg = handler.obtainMessage(SHOW_PROGRESS, 0);
+               // handler.sendMessage(msg);
             }else{
                 msg = handler.obtainMessage(SHOW_RESULT, Double.toString(result));
                 handler.sendMessage(msg);
