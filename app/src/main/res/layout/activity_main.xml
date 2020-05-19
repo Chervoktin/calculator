@@ -64,8 +64,9 @@
         android:layout_height="wrap_content"
         android:text="результат: "
         android:textSize="50sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewIsCheck" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonStop" />
 
     <TextView
         android:id="@+id/textViewResult"
@@ -74,8 +75,8 @@
         android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/textViewIsCheck" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
         android:id="@+id/textView2"
@@ -137,6 +138,6 @@
         android:text="остановить"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewIsCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
