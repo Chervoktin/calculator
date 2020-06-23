@@ -85,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
             if(stop){
                 msg = handler.obtainMessage(SHOW_RESULT, "");
                 handler.sendMessage(msg);
-               // msg = handler.obtainMessage(SHOW_PROGRESS, 0);
-               // handler.sendMessage(msg);
             }else{
                 msg = handler.obtainMessage(SHOW_RESULT, Double.toString(result));
                 handler.sendMessage(msg);
@@ -150,10 +148,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button button = findViewById(R.id.button);
+        final Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                button.setEnabled(false);
                 String str = editTextStringToParse.getText().toString();
                 textViewIsCheck.setText("");
 
